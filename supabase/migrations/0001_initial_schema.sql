@@ -98,7 +98,9 @@ create table public.posts (
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now(),
   constraint posts_body_len check (char_length(trim(body)) between 2 and 500),
-  constraint posts_author_name_len check (author_name is null or char_length(author_name) between 1 and 40)
+  constraint posts_author_name_len check (author_name is null or char_length(author_name) between 1 and 40),
+  constraint posts_anonymous_id_not_blank check (anonymous_id is null or char_length(trim(anonymous_id)) > 0),
+  constraint posts_session_id_not_blank check (session_id is null or char_length(trim(session_id)) > 0)
 );
 
 create index posts_category_status_created_idx on public.posts(category_id, status, created_at desc);
@@ -128,6 +130,15 @@ create table public.votes (
     or anonymous_id is not null
     or session_id is not null
     or vote_hash is not null
+  ),
+  constraint votes_anonymous_id_not_blank check (anonymous_id is null or char_length(trim(anonymous_id)) > 0),
+  constraint votes_session_id_not_blank check (session_id is null or char_length(trim(session_id)) > 0),
+  constraint votes_vote_hash_not_blank check (vote_hash is null or char_length(trim(vote_hash)) > 0),
+  constraint votes_single_primary_identity check (
+    ((case when user_id is null then 0 else 1 end)
+    + (case when anonymous_id is null then 0 else 1 end)
+    + (case when session_id is null then 0 else 1 end)
+    + (case when vote_hash is null then 0 else 1 end)) = 1
   )
 );
 
@@ -167,7 +178,9 @@ create table public.comments (
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now(),
   constraint comments_body_len check (char_length(trim(body)) between 1 and 300),
-  constraint comments_author_name_len check (author_name is null or char_length(author_name) between 1 and 40)
+  constraint comments_author_name_len check (author_name is null or char_length(author_name) between 1 and 40),
+  constraint comments_anonymous_id_not_blank check (anonymous_id is null or char_length(trim(anonymous_id)) > 0),
+  constraint comments_session_id_not_blank check (session_id is null or char_length(trim(session_id)) > 0)
 );
 
 create index comments_post_status_created_idx on public.comments(post_id, status, created_at desc);
@@ -200,6 +213,17 @@ create table public.reports (
     (target_type = 'post' and post_id is not null and comment_id is null)
     or
     (target_type = 'comment' and comment_id is not null and post_id is null)
+  ),
+  constraint reports_reporter_identity_present check (
+    reporter_user_id is not null
+    or reporter_anonymous_id is not null
+    or reporter_session_id is not null
+  ),
+  constraint reports_reporter_anonymous_id_not_blank check (
+    reporter_anonymous_id is null or char_length(trim(reporter_anonymous_id)) > 0
+  ),
+  constraint reports_reporter_session_id_not_blank check (
+    reporter_session_id is null or char_length(trim(reporter_session_id)) > 0
   )
 );
 
@@ -310,6 +334,13 @@ create policy "posts_anyone_insert_published"
     and comment_count = 0
     and score = 0
     and published_at is null
+    and exists (
+      select 1
+      from public.categories c
+      where c.id = posts.category_id
+        and c.status = 'active'
+        and c.is_active = true
+    )
   );
 
 create policy "votes_anyone_insert"
@@ -326,6 +357,13 @@ create policy "comments_anyone_insert_published"
   with check (
     status = 'published'
     and report_count = 0
+    and exists (
+      select 1
+      from public.posts p
+      where p.id = comments.post_id
+        and p.status = 'published'
+        and p.report_count = 0
+    )
   );
 
 create policy "reports_anyone_insert"

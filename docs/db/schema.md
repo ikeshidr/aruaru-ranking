@@ -125,14 +125,20 @@
   - `comments`: published かつ親投稿もpublished
   - `tags` / `post_tags`: 読み取り可
 - `INSERT`（匿名利用を許可）
-  - `posts`: `published` のみ + カウント初期値固定（`report_count/aruaru_count/wakaru_count/funny_count/nai_count/comment_count/score = 0`）+ `published_at is null`
-  - `votes`: 識別子（`user_id/anonymous_id/session_id/vote_hash`）のいずれか必須
-  - `comments`: `published` のみ + `report_count=0`
-  - `reports`: `open` のみ + `handled_by/handled_at` はnull
+  - `posts`: `published` のみ + カウント初期値固定（`report_count/aruaru_count/wakaru_count/funny_count/nai_count/comment_count/score = 0`）+ `published_at is null`。
+    さらに `category_id` が `categories.status='active'` かつ `is_active=true` の親カテゴリのみ許可（`exists` で検証）。
+  - `comments`: `published` のみ + `report_count=0`。
+    さらに `post_id` が `posts.status='published'` かつ `report_count=0` の親投稿のみ許可（`exists` で検証）。
+  - `votes`: 識別子（`user_id/anonymous_id/session_id/vote_hash`）のいずれか必須。
+    MVPでは識別子混在を避けるため「1投票につき主識別子1種類のみ」をCHECK制約で運用。
+  - `reports`: `open` のみ + `handled_by/handled_at` はnull。
+    通報者識別子（`reporter_user_id/reporter_anonymous_id/reporter_session_id`）の少なくとも1つを必須化。
+- 匿名識別子の品質制約
+  - `votes` / `reports` / `posts` / `comments` の匿名識別子カラムで、空文字・空白のみをCHECK制約で禁止（`char_length(trim(...)) > 0`）。
 - `UPDATE` / `DELETE`
   - 一般公開向けポリシーは作成しない（管理者用はTask 3/9で追加）
 
-> 注: RLSだけで入力値を完全防御するのは難しいため、将来はAPI/RPC経由で本文長・NGワード・レート制限・識別子品質（hash形式等）を検証する。
+> 注: RLSだけで入力値を完全防御するのは難しいため、将来はAPI/Edge Function（またはRPC）側で本文長・NGワード・レート制限・識別子品質（hash形式等）を補完検証する。
 > 注: Supabase API公開時は `anon` / `authenticated` のロール別制御、`service_role` 利用箇所、管理者判定（`profiles.role`）を追加する。
 
 ---
@@ -174,3 +180,11 @@ Task 3で以下を正式投入予定です。
    - `profiles.role = admin|moderator`
    - 投稿の非公開/削除更新ポリシー
 4. `reports` 対応フロー（open -> resolved/ignored）の管理画面要件確定
+
+---
+
+## 9. ローカル開発用 `.env.local` の作成
+
+1. ルートにある `.env.local.example` をコピーして `.env.local` を作成します。
+2. `NEXT_PUBLIC_SUPABASE_URL` と `NEXT_PUBLIC_SUPABASE_ANON_KEY` に Supabase プロジェクトの値を設定します。
+3. `.env.local` は `.gitignore` 済みなのでコミットしないでください。
