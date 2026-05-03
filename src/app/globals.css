@@ -1,0 +1,4 @@
+@import 'tailwindcss';
+
+:root { color-scheme: light; }
+body { @apply bg-amber-50/60 text-slate-800; }
