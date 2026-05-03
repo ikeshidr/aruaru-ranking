@@ -1,7 +1,13 @@
-import { supabaseClient } from '@/lib/supabase/client';
+import { getSupabaseClient } from '@/lib/supabase/client';
 
 export async function getPublishedCategories() {
-  const { data, error } = await supabaseClient
+  const { client, error: clientError } = getSupabaseClient();
+
+  if (!client) {
+    throw new Error(clientError ?? 'Supabase client is not initialized.');
+  }
+
+  const { data, error } = await client
     .from('categories')
     .select('*')
     .eq('status', 'active')

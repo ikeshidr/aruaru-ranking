@@ -1,11 +1,19 @@
 import { AdSlot } from '@/components/AdSlot';
 import { CategoryCard } from '@/components/CategoryCard';
 import { PostCard } from '@/components/PostCard';
-import { nursePosts, popularCategories } from '@/data/dummy';
+import { getHomeFeedData } from '@/lib/queries/home-feed';
 
-export default function Home() {
+export default async function Home() {
+  const homeFeed = await getHomeFeedData();
+
   return (
     <main className="mx-auto max-w-6xl space-y-10 px-4 py-8">
+      {homeFeed.errorMessage ? (
+        <div className="rounded-2xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-800">
+          <p className="font-bold">データ取得はフォールバック表示中です</p>
+          <p className="mt-1">{homeFeed.errorMessage}</p>
+        </div>
+      ) : null}
       <section className="grid items-center gap-8 rounded-[2rem] bg-gradient-to-br from-orange-100 via-amber-50 to-white p-7 shadow-lg shadow-orange-100/60 md:grid-cols-2 md:p-10">
         <div>
           <h1 className="text-3xl font-black leading-tight text-slate-800 md:text-5xl">みんなの「あるある」で、
@@ -24,7 +32,7 @@ export default function Home() {
       <section>
         <h2 className="mb-4 text-2xl font-black">人気カテゴリ</h2>
         <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-          {popularCategories.map((c) => (
+          {homeFeed.categories.map((c) => (
             <CategoryCard key={c.name} name={c.name} count={c.count} />
           ))}
         </div>
@@ -35,7 +43,7 @@ export default function Home() {
       <section className="grid gap-6 lg:grid-cols-[1fr_320px]">
         <div className="space-y-6">
           <h2 className="text-2xl font-black">総合ランキング</h2>
-          {nursePosts.map((p) => (
+          {homeFeed.posts.map((p) => (
             <PostCard key={p.id} post={p} />
           ))}
           <AdSlot position="ranking-bottom" size="970x90" />
