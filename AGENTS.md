@@ -2,6 +2,22 @@
 
 このリポジトリは「あるあるランキング / あるある言いたい！」の開発用です。
 
+## 2026-05 現在の最優先ルール
+
+既存仕様より下記を優先してください。
+
+- 投稿はMVPでは即時公開へ変更する方針。`posts.status = approved` を公開状態として使う。
+- 投稿で `published` / `public` status は使わない。
+- 公開投稿の取得条件は `status = 'approved' and deleted_at is null` を維持する。
+- コメントは承認制にしない。投稿後すぐ公開する。
+- コメントの公開状態は `comments.status = public` を使う。
+- 公開コメントの取得条件は `status = 'public' and deleted_at is null` を維持する。
+- 管理画面は「事前承認」より「事後モデレーション」を主目的にする。
+- `'use server'` ファイルからは async function 以外を export しない。
+- Server Action の initial state / type / schema は `'use server'` ではない別ファイルへ置く。
+- Supabase の詳細エラーをユーザー画面に出さない。
+- 既存migrationは書き換えず、新しいtimestamp付きmigrationを追加する。
+
 ## プロジェクト概要
 
 ユーザーが「あるあるネタ」を投稿し、投票・コメント・ランキング閲覧できるWebサイトです。
@@ -22,7 +38,6 @@
 - スマホファーストで作ること
 - 投稿、投票、ランキング、コメント、通報、広告枠をMVPの中心にすること
 - コメントは承認制にしない。原則即時公開とする
-- 投稿は初期運用では承認制とする
 - 広告枠は必ずコンポーネント化すること
 - 画像をそのまま背景として貼らず、Tailwind CSSで再現すること
 
@@ -53,17 +68,23 @@
 
 - 1タスクでやる範囲を広げすぎないこと
 - まず静的UIを作り、その後DB接続すること
-- Supabase接続は初回タスクでは行わないこと
 - `npm run build` が通る状態を保つこと
 - 型エラーを放置しないこと
 - 可能な限りコンポーネント分割すること
+- `.env.local`, `.next`, `node_modules`, `supabase/.temp` はコミットしないこと
 
-## 初回実装の優先順位
+## Required Checks
 
-1. トップページ `/`
-2. 看護師あるあるページ `/c/nurse`
-3. 共通ヘッダー
-4. 共通フッター
-5. 投稿カード
-6. 広告枠コンポーネント
-7. ダミーデータ表示
+変更後は原則として以下を実行すること。
+
+```bash
+npm run lint
+npm run build
+```
+
+DB/RLS変更がある場合は以下も必要。
+
+```bash
+npx supabase db push
+npx supabase gen types typescript --linked | Out-File -FilePath src\lib\supabase\database.types.ts -Encoding utf8
+```
