@@ -12,9 +12,16 @@ type SubmitPostFormProps = {
   }>;
 };
 
+const emptyValues = {
+  categoryId: '',
+  body: '',
+  authorName: '',
+};
+
 export function SubmitPostForm({ categories }: SubmitPostFormProps) {
   const [state, formAction, isPending] = useActionState(submitPostAction, initialSubmitPostActionState);
   const formRef = useRef<HTMLFormElement>(null);
+  const values = state.values ?? emptyValues;
 
   useEffect(() => {
     if (state.status === 'success') {
@@ -41,7 +48,7 @@ export function SubmitPostForm({ categories }: SubmitPostFormProps) {
         <span className="text-sm font-black text-slate-700">カテゴリー</span>
         <select
           name="categoryId"
-          defaultValue={state.values.categoryId}
+          defaultValue={values.categoryId}
           className="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 font-bold text-slate-700 outline-none ring-orange-200 focus:ring-2"
           disabled={isPending}
           required
@@ -53,7 +60,7 @@ export function SubmitPostForm({ categories }: SubmitPostFormProps) {
             </option>
           ))}
         </select>
-        {state.fieldErrors.categoryId ? (
+        {state.fieldErrors?.categoryId ? (
           <p className="mt-2 text-sm font-bold text-rose-500">{state.fieldErrors.categoryId}</p>
         ) : null}
       </label>
@@ -62,7 +69,7 @@ export function SubmitPostForm({ categories }: SubmitPostFormProps) {
         <span className="text-sm font-black text-slate-700">あるある本文</span>
         <textarea
           name="body"
-          defaultValue={state.values.body}
+          defaultValue={values.body}
           minLength={MIN_POST_BODY_LENGTH}
           maxLength={MAX_POST_BODY_LENGTH}
           className="mt-2 h-40 w-full resize-none rounded-2xl border border-slate-200 bg-white px-4 py-3 font-bold leading-7 text-slate-700 outline-none ring-orange-200 placeholder:text-slate-300 focus:ring-2"
@@ -74,7 +81,7 @@ export function SubmitPostForm({ categories }: SubmitPostFormProps) {
           <span>
             {MIN_POST_BODY_LENGTH}〜{MAX_POST_BODY_LENGTH}文字で入力してください。
           </span>
-          {state.fieldErrors.body ? <span className="text-rose-500">{state.fieldErrors.body}</span> : null}
+          {state.fieldErrors?.body ? <span className="text-rose-500">{state.fieldErrors.body}</span> : null}
         </div>
       </label>
 
@@ -82,7 +89,7 @@ export function SubmitPostForm({ categories }: SubmitPostFormProps) {
         <span className="text-sm font-black text-slate-700">投稿者名</span>
         <input
           name="authorName"
-          defaultValue={state.values.authorName}
+          defaultValue={values.authorName}
           maxLength={MAX_POST_AUTHOR_NAME_LENGTH}
           className="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 font-bold text-slate-700 outline-none ring-orange-200 placeholder:text-slate-300 focus:ring-2"
           placeholder="匿名さん"
@@ -90,7 +97,7 @@ export function SubmitPostForm({ categories }: SubmitPostFormProps) {
         />
         <div className="mt-2 flex flex-wrap items-center justify-between gap-2 text-xs font-bold text-slate-400">
           <span>未入力の場合は「匿名さん」で投稿されます。</span>
-          {state.fieldErrors.authorName ? <span className="text-rose-500">{state.fieldErrors.authorName}</span> : null}
+          {state.fieldErrors?.authorName ? <span className="text-rose-500">{state.fieldErrors.authorName}</span> : null}
         </div>
       </label>
 
