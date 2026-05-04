@@ -1,7 +1,8 @@
 'use client';
 
 import { useActionState, useEffect, useRef } from 'react';
-import { initialSubmitPostActionState, submitPostAction } from '@/lib/actions/posts';
+import { submitPostAction } from '@/lib/actions/posts';
+import { initialSubmitPostActionState } from '@/lib/submit/submitPostState';
 import { MAX_POST_AUTHOR_NAME_LENGTH, MAX_POST_BODY_LENGTH, MIN_POST_BODY_LENGTH } from '@/lib/validators/post';
 
 type SubmitPostFormProps = {
