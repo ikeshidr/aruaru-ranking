@@ -27,6 +27,8 @@ export const initialSubmitPostActionState: SubmitPostActionState = {
   },
 };
 
+const GENERIC_SUBMIT_ERROR_MESSAGE = '投稿に失敗しました。時間をおいて再度お試しください。';
+
 function getFormValue(formData: FormData, key: string) {
   const value = formData.get(key);
   return typeof value === 'string' ? value : '';
@@ -61,9 +63,11 @@ export async function submitPostAction(
     .maybeSingle();
 
   if (categoryError) {
+    console.error('Failed to verify submit category', categoryError);
+
     return {
       status: 'error',
-      message: `カテゴリー確認に失敗しました: ${categoryError.message}`,
+      message: GENERIC_SUBMIT_ERROR_MESSAGE,
       fieldErrors: {},
       values: validation.data,
     };
@@ -91,9 +95,11 @@ export async function submitPostAction(
   });
 
   if (insertError) {
+    console.error('Failed to insert pending post', insertError);
+
     return {
       status: 'error',
-      message: `投稿に失敗しました: ${insertError.message}`,
+      message: GENERIC_SUBMIT_ERROR_MESSAGE,
       fieldErrors: {},
       values: validation.data,
     };
