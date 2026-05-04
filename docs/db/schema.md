@@ -174,3 +174,11 @@ Task 3で以下を正式投入予定です。
    - `profiles.role = admin|moderator`
    - 投稿の非公開/削除更新ポリシー
 4. `reports` 対応フロー（open -> resolved/ignored）の管理画面要件確定
+
+---
+
+## 9. ローカル開発用 `.env.local` の作成
+
+1. ルートにある `.env.local.example` をコピーして `.env.local` を作成します。
+2. `NEXT_PUBLIC_SUPABASE_URL` と `NEXT_PUBLIC_SUPABASE_ANON_KEY` に Supabase プロジェクトの値を設定します。
+3. `.env.local` は `.gitignore` 済みなのでコミットしないでください。
