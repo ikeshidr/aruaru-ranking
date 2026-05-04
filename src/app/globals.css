@@ -1,4 +1,13 @@
 @import 'tailwindcss';
 
-:root { color-scheme: light; }
-body { @apply bg-amber-50/60 text-slate-800; }
+:root {
+  color-scheme: light;
+}
+
+body {
+  @apply bg-[#fff8ed] text-slate-800 antialiased;
+}
+
+a {
+  @apply transition;
+}
