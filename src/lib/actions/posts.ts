@@ -2,30 +2,9 @@
 
 import { revalidatePath } from 'next/cache';
 import { createClient } from '@/lib/supabase/server';
+import type { SubmitPostActionState } from '@/lib/submit/submitPostState';
 import { getOrCreateVisitorId } from '@/lib/visitor/visitor-id';
-import { DEFAULT_AUTHOR_NAME, type SubmitPostFieldErrors, validateSubmitPost } from '@/lib/validators/post';
-
-export type SubmitPostActionState = {
-  status: 'idle' | 'success' | 'error';
-  message: string;
-  fieldErrors: SubmitPostFieldErrors;
-  values: {
-    categoryId: string;
-    body: string;
-    authorName: string;
-  };
-};
-
-export const initialSubmitPostActionState: SubmitPostActionState = {
-  status: 'idle',
-  message: '',
-  fieldErrors: {},
-  values: {
-    categoryId: '',
-    body: '',
-    authorName: '',
-  },
-};
+import { DEFAULT_AUTHOR_NAME, validateSubmitPost } from '@/lib/validators/post';
 
 const GENERIC_SUBMIT_ERROR_MESSAGE = '投稿に失敗しました。時間をおいて再度お試しください。';
 
