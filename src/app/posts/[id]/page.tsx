@@ -1,4 +1,5 @@
 import { notFound } from 'next/navigation';
+import { CommentForm } from '@/components/comments/CommentForm';
 import { CommentList } from '@/components/comments/CommentList';
 import { PostDetailCard } from '@/components/posts/PostDetailCard';
 import { Container } from '@/components/ui/Container';
@@ -24,18 +25,9 @@ export default async function PostDetailPage({ params }: PostDetailPageProps) {
         <PostDetailCard post={post} />
 
         <SectionCard>
-          <h2 className="text-2xl font-black text-slate-950">コメント</h2>
-          <p className="mt-2 text-sm font-bold text-slate-400">コメント投稿はPhase 4以降で実装します。</p>
-          <div className="mt-5 rounded-[24px] border border-dashed border-slate-200 bg-slate-50 p-5">
-            <textarea
-              disabled
-              className="h-28 w-full resize-none rounded-2xl border border-slate-200 bg-white p-4 text-sm font-bold text-slate-400"
-              placeholder="コメントを書く（Phase 4で実装）"
-            />
-            <button disabled className="mt-3 rounded-full bg-slate-200 px-5 py-3 text-sm font-black text-slate-400">
-              コメントを投稿する
-            </button>
-          </div>
+          <h2 className="text-2xl font-black text-slate-950">コメントを投稿する</h2>
+          <p className="mt-2 text-sm font-bold text-slate-400">コメントは投稿後すぐに公開されます。</p>
+          <CommentForm postId={post.id} />
         </SectionCard>
 
         <CommentList comments={comments} />
