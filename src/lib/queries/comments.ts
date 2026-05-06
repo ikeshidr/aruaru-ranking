@@ -12,7 +12,7 @@ export async function getPublicComments(postId: string) {
     .from('comments')
     .select('id, post_id, author_name, body, status, deleted_at, created_at, updated_at')
     .eq('post_id', postId)
-    .eq('status', 'published')
+    .eq('status', 'public')
     .is('deleted_at', null)
     .order('created_at', { ascending: true });
 
