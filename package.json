@@ -2,7 +2,7 @@
   "name": "aruaru-ranking",
   "version": "0.1.0",
   "private": true,
-  "scripts": {
+"scripts": {
   "dev": "next dev",
   "build": "next build",
   "start": "next start",
@@ -10,8 +10,9 @@
   "test:e2e": "playwright test",
   "test:e2e:ui": "playwright test --ui",
   "test:e2e:headed": "playwright test --headed",
-  "test:e2e:report": "playwright show-report"
-  },
+  "test:e2e:report": "playwright show-report",
+  "verify": "npm run lint && npm run build && npm run test:e2e"
+},
   "dependencies": {
     "@supabase/supabase-js": "^2.49.8",
     "next": "15.3.2",
