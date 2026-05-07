@@ -15,7 +15,7 @@ export function VotePostButton({ postId, voteCount }: VotePostButtonProps) {
   const displayedVoteCount = state.voteCount ?? voteCount;
 
   return (
-    <form action={formAction} className="space-y-2">
+    <form action={formAction} className="w-full space-y-2">
       <input type="hidden" name="postId" value={postId} />
       <button
         type="submit"
