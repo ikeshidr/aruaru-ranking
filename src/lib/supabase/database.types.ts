@@ -487,7 +487,16 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      vote_post: {
+        Args: {
+          p_post_id: string
+          p_visitor_id: string
+        }
+        Returns: {
+          vote_count: number
+          already_voted: boolean
+        }[]
+      }
     }
     Enums: {
       category_status: "active" | "hidden" | "archived"
