@@ -33,6 +33,7 @@ test('公開投稿があれば投稿詳細ページでコメント欄が表示�
 
   await expect(page).toHaveURL(/\/posts\//);
   const voteButton = page.getByRole('button', { name: /わかる！/ });
+  await expect(voteButton).toHaveCount(1);
   await expect(voteButton).toBeVisible();
   await expect(voteButton).toBeEnabled();
   await expect(page.getByRole('heading', { name: 'コメント' })).toBeVisible();
