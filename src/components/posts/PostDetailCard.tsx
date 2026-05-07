@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { TagPill } from '@/components/ui/TagPill';
+import { VotePostButton } from '@/components/voting/VotePostButton';
 import { formatDate, formatNumber } from '@/lib/utils/format';
 
 type PostDetailCardProps = {
@@ -43,13 +44,7 @@ export function PostDetailCard({ post }: PostDetailCardProps) {
       </div>
 
       <div className="mt-8 grid gap-3 border-t border-slate-100 pt-5 sm:grid-cols-3">
-        <button
-          type="button"
-          disabled
-          className="rounded-2xl bg-gradient-to-r from-orange-400 to-rose-400 px-5 py-4 text-center font-black text-white opacity-70"
-        >
-          わかる！ {formatNumber(post.vote_count)}
-        </button>
+        <VotePostButton postId={post.id} voteCount={post.vote_count} />
         <div className="rounded-2xl bg-slate-50 px-5 py-4 text-center font-black text-slate-600">
           コメント {formatNumber(post.comment_count)}
         </div>

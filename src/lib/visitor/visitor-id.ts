@@ -4,7 +4,7 @@ import { randomUUID } from 'node:crypto';
 const VISITOR_ID_COOKIE_NAME = 'aruaru_visitor_id';
 const VISITOR_ID_MAX_AGE_SECONDS = 60 * 60 * 24 * 365;
 
-function isValidVisitorId(value: string | undefined) {
+function isValidVisitorId(value: string | undefined): value is string {
   return typeof value === 'string' && value.trim().length >= 16 && value.length <= 128;
 }
 
@@ -15,7 +15,7 @@ export async function getVisitorId() {
   return isValidVisitorId(visitorId) ? visitorId : null;
 }
 
-export async function getOrCreateVisitorId() {
+export async function getOrCreateVisitorId(): Promise<string> {
   const cookieStore = await cookies();
   const existingVisitorId = cookieStore.get(VISITOR_ID_COOKIE_NAME)?.value;
 
