@@ -41,3 +41,9 @@ test('公開投稿があれば投稿詳細ページでコメント欄が表示�
   await expect(page.getByRole('heading', { name: 'コメント' })).toBeVisible();
   await expect(page.getByRole('button', { name: /コメントを投稿|投稿する/ })).toBeVisible();
 });
+
+test('管理者ログインページが表示できる', async ({ page }) => {
+  await page.goto('/admin/login');
+  await expect(page.getByRole('heading', { name: '管理者ログイン' })).toBeVisible();
+  await expect(page.getByRole('button', { name: '管理画面にログイン' })).toBeVisible();
+});
