@@ -1,7 +1,8 @@
+import { cookies } from 'next/headers';
 import { createClient as createSupabaseClient } from '@supabase/supabase-js';
-import type { Database } from "@/lib/supabase/database.types";
+import type { Database } from '@/lib/supabase/database.types';
 
-export async function createClient() {
+function getSupabaseEnvironment() {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
@@ -9,10 +10,35 @@ export async function createClient() {
     throw new Error('Missing Supabase environment variables: NEXT_PUBLIC_SUPABASE_URL / NEXT_PUBLIC_SUPABASE_ANON_KEY');
   }
 
+  return { supabaseUrl, supabaseAnonKey };
+}
+
+export async function createClient() {
+  const { supabaseUrl, supabaseAnonKey } = getSupabaseEnvironment();
+  const cookieStore = await cookies();
+
   return createSupabaseClient<Database>(supabaseUrl, supabaseAnonKey, {
     auth: {
-      persistSession: false,
+      persistSession: true,
       autoRefreshToken: false,
+      detectSessionInUrl: false,
+      storage: {
+        getItem(key) {
+          return cookieStore.get(key)?.value ?? null;
+        },
+        setItem(key, value) {
+          cookieStore.set(key, value, {
+            path: '/',
+            httpOnly: true,
+            sameSite: 'lax',
+            secure: process.env.NODE_ENV === 'production',
+            maxAge: 60 * 60 * 24 * 365,
+          });
+        },
+        removeItem(key) {
+          cookieStore.delete(key);
+        },
+      },
     },
   });
 }
