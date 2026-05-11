@@ -22,5 +22,6 @@ test('公開投稿があれば投稿詳細ページでコメントを投稿で�
   await page.getByLabel('コメント').fill(commentBody);
   await page.getByRole('button', { name: 'コメントを投稿する' }).click();
 
-  await expect(page.getByText(/コメントを投稿しました。/).or(page.getByText(commentBody))).toBeVisible();
+  await expect(page.getByText('コメントを投稿しました。')).toBeVisible();
+  await expect(page.getByText(commentBody)).toBeVisible();
 });
