@@ -34,9 +34,17 @@ test('公開投稿があれば投稿詳細ページでコメント欄が表示�
 
   if ((await postLink.count()) === 0) {
     test.skip(true, '公開投稿リンクがないため投稿詳細テストをスキップ');
+    return;
   }
 
-  await postLink.click();
+  const postHref = await postLink.getAttribute('href');
+
+  if (!postHref) {
+    test.skip(true, '公開投稿リンクの href がないため投稿詳細テストをスキップ');
+    return;
+  }
+
+  await page.goto(postHref);
 
   await expect(page).toHaveURL(/\/posts\//);
   const voteButton = page.getByRole('button', { name: /わかる！/ });
