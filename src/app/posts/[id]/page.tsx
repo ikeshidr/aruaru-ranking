@@ -45,12 +45,12 @@ export default async function PostDetailPage({ params }: PostDetailPageProps) {
 
   return (
     <main>
-      <Container className="space-y-8 py-8">
+      <Container className="space-y-8 py-8 sm:py-10">
         <PostDetailCard post={post} />
 
         <SectionCard>
           <h2 className="text-2xl font-black text-slate-950">コメントを投稿する</h2>
-          <p className="mt-2 text-sm font-bold text-slate-400">コメントは投稿後すぐに公開されます。</p>
+          <p className="mt-2 text-sm font-bold text-slate-400">コメントは投稿後すぐに公開されます。やさしい共感をひとことどうぞ。</p>
           <CommentForm postId={post.id} />
         </SectionCard>
 

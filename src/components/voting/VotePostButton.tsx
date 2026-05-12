@@ -20,7 +20,7 @@ export function VotePostButton({ postId, voteCount }: VotePostButtonProps) {
       <button
         type="submit"
         disabled={isPending}
-        className="w-full rounded-2xl bg-gradient-to-r from-orange-400 to-rose-400 px-5 py-4 text-center font-black text-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-md disabled:cursor-wait disabled:opacity-70"
+        className="w-full rounded-2xl bg-gradient-to-r from-orange-400 to-rose-400 px-5 py-4 text-center font-black text-white shadow-lg shadow-orange-300/35 hover:-translate-y-0.5 hover:shadow-orange-300/55 disabled:cursor-wait disabled:translate-y-0 disabled:opacity-70"
       >
         {isPending ? '投票中…' : `わかる！ ${formatNumber(displayedVoteCount)}`}
       </button>

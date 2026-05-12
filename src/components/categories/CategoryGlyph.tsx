@@ -20,7 +20,7 @@ export function CategoryGlyph({ iconKey, className = 'h-14 w-14 text-3xl' }: Cat
   const icon = iconKey ? iconMap[iconKey] : undefined;
 
   return (
-    <div className={`grid place-items-center rounded-2xl border border-slate-100 bg-white shadow-sm ${className}`}>
+    <div className={`grid place-items-center rounded-2xl border border-orange-100 bg-gradient-to-br from-white to-orange-50/70 ring-1 ring-white/80 ${className}`}>
       <span aria-hidden>{icon ?? '✨'}</span>
     </div>
   );

@@ -26,12 +26,12 @@ export function CommentForm({ postId }: CommentFormProps) {
   }, [state.status]);
 
   return (
-    <form ref={formRef} action={formAction} className="mt-5 rounded-[24px] border border-orange-100 bg-orange-50/60 p-5">
+    <form ref={formRef} action={formAction} className="mt-5 rounded-[28px] border border-orange-100/80 bg-gradient-to-br from-orange-50/80 to-rose-50/50 p-5 shadow-inner shadow-orange-100/50 sm:p-6">
       <input type="hidden" name="postId" value={postId} />
 
       {state.message ? (
         <div
-          className={`mb-4 rounded-[20px] border px-4 py-3 text-sm font-black ${
+          className={`mb-4 rounded-[22px] border px-4 py-3 text-sm font-black shadow-sm ${
             state.status === 'success'
               ? 'border-emerald-100 bg-emerald-50 text-emerald-700'
               : 'border-rose-100 bg-rose-50 text-rose-600'
@@ -50,7 +50,7 @@ export function CommentForm({ postId }: CommentFormProps) {
           name="body"
           defaultValue={state.values.body}
           maxLength={MAX_COMMENT_BODY_LENGTH}
-          className="mt-2 h-28 w-full resize-none rounded-2xl border border-slate-200 bg-white p-4 text-sm font-bold leading-7 text-slate-700 outline-none ring-orange-200 placeholder:text-slate-300 focus:ring-2"
+          className="mt-2 h-32 w-full resize-none rounded-2xl border border-orange-100 bg-white/95 p-4 text-sm font-bold leading-7 text-slate-700 outline-none ring-orange-200 placeholder:text-slate-300 focus:border-orange-200 focus:ring-2"
           placeholder="このあるある、わかる！など気軽にコメントできます"
           disabled={isPending}
           required
@@ -67,7 +67,7 @@ export function CommentForm({ postId }: CommentFormProps) {
           name="authorName"
           defaultValue={state.values.authorName}
           maxLength={MAX_COMMENT_AUTHOR_NAME_LENGTH}
-          className="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-bold text-slate-700 outline-none ring-orange-200 placeholder:text-slate-300 focus:ring-2"
+          className="mt-2 w-full rounded-2xl border border-orange-100 bg-white/95 px-4 py-3 text-sm font-bold text-slate-700 outline-none ring-orange-200 placeholder:text-slate-300 focus:border-orange-200 focus:ring-2"
           placeholder="匿名さん"
           disabled={isPending}
         />
@@ -80,7 +80,7 @@ export function CommentForm({ postId }: CommentFormProps) {
       <button
         type="submit"
         disabled={isPending}
-        className="mt-5 w-full rounded-full bg-gradient-to-r from-orange-400 to-rose-400 px-6 py-3 text-sm font-black text-white shadow-md shadow-orange-500/20 hover:opacity-95 disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
+        className="mt-5 w-full rounded-full bg-gradient-to-r from-orange-400 to-rose-400 px-6 py-3.5 text-sm font-black text-white shadow-lg shadow-orange-300/35 hover:-translate-y-0.5 hover:shadow-orange-300/55 disabled:cursor-not-allowed disabled:translate-y-0 disabled:opacity-60 sm:w-auto"
       >
         {isPending ? '投稿中...' : 'コメントを投稿する'}
       </button>

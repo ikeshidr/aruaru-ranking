@@ -47,8 +47,8 @@ export default async function CategoryDetailPage({ params }: CategoryDetailPageP
 
   return (
     <main>
-      <Container className="space-y-8 py-8">
-        <section className="grid gap-6 rounded-[36px] border border-[#f5eadc] bg-gradient-to-br from-[#fff4dd] via-white to-[#fff1f5] p-8 shadow-sm lg:grid-cols-[1fr_300px]">
+      <Container className="space-y-8 py-8 sm:py-10">
+        <section className="grid gap-6 overflow-hidden rounded-[38px] border border-white/80 bg-gradient-to-br from-[#fff4dd] via-white to-[#fff1f5] p-7 shadow-[0_24px_70px_rgba(251,146,60,0.14)] ring-1 ring-orange-100/60 sm:p-8 lg:grid-cols-[1fr_300px]">
           <div>
             <p className="text-sm font-black text-orange-500">{category.group_name}</p>
             <h1 className="mt-2 text-4xl font-black text-slate-950 sm:text-6xl">{category.title}</h1>
@@ -59,19 +59,19 @@ export default async function CategoryDetailPage({ params }: CategoryDetailPageP
               <TagList tags={category.tags ?? []} />
             </div>
           </div>
-          <div className="grid place-items-center rounded-[32px] bg-white p-8 shadow-inner">
+          <div className="grid place-items-center rounded-[34px] border border-orange-100/70 bg-white/86 p-8 shadow-inner shadow-orange-100/70">
             <CategoryGlyph iconKey={category.icon_key} className="h-32 w-32 text-6xl" />
             <p className="mt-4 text-center text-sm font-bold text-slate-400">
-              ※Phase 3では仮絵文字。後続でSVG線画イラストへ調整予定。
+              このカテゴリーの雰囲気をゆるく表現しています。
             </p>
           </div>
         </section>
 
         <section className="grid gap-6 lg:grid-cols-[1fr_320px]">
-          <div className="space-y-4">
+          <div className="space-y-5">
             <h2 className="text-2xl font-black text-slate-950">{category.title}のランキング</h2>
             {posts.length === 0 ? (
-              <p className="rounded-[28px] bg-white p-8 text-center font-bold text-slate-400">このカテゴリーのあるあるはまだありません。</p>
+              <p className="rounded-[30px] border border-dashed border-orange-200 bg-white/86 p-10 text-center font-bold text-slate-400 shadow-sm">このカテゴリーのあるあるはまだありません。</p>
             ) : (
               posts.map((post, index) =>
                 index < 3 ? (
@@ -95,7 +95,7 @@ export default async function CategoryDetailPage({ params }: CategoryDetailPageP
               <h3 className="text-lg font-black text-slate-950">すべてのカテゴリーを見る</h3>
               <div className="mt-4 space-y-2">
                 {categories.slice(0, 8).map((item) => (
-                  <Link key={item.id} href={`/categories/${item.slug}`} className="block rounded-2xl bg-slate-50 px-4 py-3 text-sm font-black text-slate-600 hover:bg-orange-50 hover:text-orange-600">
+                  <Link key={item.id} href={`/categories/${item.slug}`} className="block rounded-2xl bg-slate-50/90 px-4 py-3 text-sm font-black text-slate-600 ring-1 ring-slate-100 hover:bg-orange-50 hover:text-orange-600">
                     {item.title}
                   </Link>
                 ))}

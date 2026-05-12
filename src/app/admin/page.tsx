@@ -28,8 +28,8 @@ export default async function AdminPage() {
 
   return (
     <main>
-      <Container className="space-y-8 py-8">
-        <section className="rounded-[32px] border border-[#f5eadc] bg-[#fffaf2] p-8 shadow-sm">
+      <Container className="space-y-8 py-8 sm:py-10">
+        <section className="rounded-[36px] border border-white/80 bg-gradient-to-br from-[#fff4dd] via-white to-[#fff1f5] p-7 shadow-[0_20px_55px_rgba(251,146,60,0.12)] ring-1 ring-orange-100/60 sm:p-10">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
             <div>
               <p className="text-sm font-black text-orange-500">ADMIN</p>
@@ -41,7 +41,7 @@ export default async function AdminPage() {
             <form action={adminLogoutAction}>
               <button
                 type="submit"
-                className="rounded-full border border-slate-200 bg-white px-5 py-3 text-sm font-black text-slate-600 shadow-sm hover:bg-slate-50"
+                className="rounded-full border border-orange-100 bg-white px-5 py-3 text-sm font-black text-slate-600 shadow-sm hover:-translate-y-0.5 hover:bg-orange-50 hover:text-orange-600"
               >
                 ログアウト
               </button>
