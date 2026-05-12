@@ -27,16 +27,24 @@ export async function createClient() {
           return cookieStore.get(key)?.value ?? null;
         },
         setItem(key, value) {
-          cookieStore.set(key, value, {
-            path: '/',
-            httpOnly: true,
-            sameSite: 'lax',
-            secure: process.env.NODE_ENV === 'production',
-            maxAge: 60 * 60 * 24 * 365,
-          });
+          try {
+            cookieStore.set(key, value, {
+              path: '/',
+              httpOnly: true,
+              sameSite: 'lax',
+              secure: process.env.NODE_ENV === 'production',
+              maxAge: 60 * 60 * 24 * 365,
+            });
+          } catch {
+            // Server Component render では Cookie を変更できないため無視する
+          }
         },
         removeItem(key) {
-          cookieStore.delete(key);
+          try {
+            cookieStore.delete(key);
+          } catch {
+            // Server Component render では Cookie を変更できないため無視する
+          }
         },
       },
     },

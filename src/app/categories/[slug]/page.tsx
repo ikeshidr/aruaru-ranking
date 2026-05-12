@@ -1,3 +1,4 @@
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { CategoryGlyph } from '@/components/categories/CategoryGlyph';
@@ -8,10 +9,32 @@ import { Container } from '@/components/ui/Container';
 import { SectionCard } from '@/components/ui/SectionCard';
 import { getActiveCategories, getCategoryBySlug } from '@/lib/queries/categories';
 import { getCategoryPosts } from '@/lib/queries/posts';
+import { createPageMetadata, truncateDescription } from '@/lib/seo';
 
 type CategoryDetailPageProps = {
   params: Promise<{ slug: string }>;
 };
+
+export async function generateMetadata({ params }: CategoryDetailPageProps): Promise<Metadata> {
+  const { slug } = await params;
+  const category = await getCategoryBySlug(slug);
+
+  if (!category) {
+    return createPageMetadata({
+      title: 'カテゴリーが見つかりません',
+      description: '指定されたカテゴリーは見つかりませんでした。',
+      path: `/categories/${slug}`,
+    });
+  }
+
+  return createPageMetadata({
+    title: `${category.title}のあるある`,
+    description: truncateDescription(
+      category.description ?? `${category.title}にまつわる「あるある」をランキングで見たり、投票・コメントで楽しめます。`,
+    ),
+    path: `/categories/${category.slug}`,
+  });
+}
 
 export default async function CategoryDetailPage({ params }: CategoryDetailPageProps) {
   const { slug } = await params;

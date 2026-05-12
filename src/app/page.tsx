@@ -9,6 +9,15 @@ import { SectionCard } from '@/components/ui/SectionCard';
 import { getActiveCategories } from '@/lib/queries/categories';
 import { getApprovedPosts, getRankingPosts } from '@/lib/queries/posts';
 
+import { createPageMetadata } from '@/lib/seo';
+export const metadata = createPageMetadata({
+  title: 'あるあるランキング',
+  description: '職業・学校・動物・趣味など、みんなの「あるある」を投稿・投票・コメントで楽しめるランキングサイトです。',
+  path: '/',
+});
+
+export const dynamic = 'force-dynamic';
+
 export default async function Home() {
   const [categories, rankingPosts, approvedPosts] = await Promise.all([
     getActiveCategories(),
