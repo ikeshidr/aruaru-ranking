@@ -3,6 +3,15 @@ import { Container } from '@/components/ui/Container';
 import { WideAd } from '@/components/home/WideAd';
 import { getRankingPosts } from '@/lib/queries/posts';
 
+import { createPageMetadata } from '@/lib/seo';
+export const metadata = createPageMetadata({
+  title: '総合ランキング',
+  description: 'みんなの共感を集めた「あるある」を全カテゴリー横断でランキング表示します。人気の投稿に投票やコメントで参加できます。',
+  path: '/ranking',
+});
+
+export const dynamic = 'force-dynamic';
+
 export default async function RankingPage() {
   const posts = await getRankingPosts();
 

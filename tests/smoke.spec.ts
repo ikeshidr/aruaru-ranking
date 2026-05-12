@@ -1,5 +1,12 @@
 import { expect, test } from '@playwright/test';
 
+const staticPages = [
+  { path: '/terms', heading: '利用規約' },
+  { path: '/privacy', heading: 'プライバシーポリシー' },
+  { path: '/guidelines', heading: '投稿ガイドライン' },
+  { path: '/contact', heading: 'お問い合わせ' },
+];
+
 test('トップページが表示できる', async ({ page }) => {
   await page.goto('/');
   await expect(page.getByRole('link', { name: 'あるあるランキング' })).toBeVisible();
@@ -47,4 +54,41 @@ test('管理者ログインページが表示できる', async ({ page }) => {
   await page.goto('/admin/login');
   await expect(page.getByRole('heading', { name: '管理者ログイン' })).toBeVisible();
   await expect(page.getByRole('button', { name: '管理画面にログイン' })).toBeVisible();
+});
+
+test('sitemap.xml が公開ページだけを返す', async ({ request }) => {
+  const response = await request.get('/sitemap.xml');
+  expect(response.status()).toBe(200);
+
+  const sitemap = await response.text();
+  expect(sitemap).toContain('<urlset');
+  expect(sitemap).toContain('<loc>');
+  expect(sitemap).not.toContain('/admin');
+  expect(sitemap).not.toContain('/admin/login');
+});
+
+test('robots.txt が管理画面をクロール対象外にする', async ({ request }) => {
+  const response = await request.get('/robots.txt');
+  expect(response.status()).toBe(200);
+
+  const robots = await response.text();
+  expect(robots).toContain('User-Agent: *');
+  expect(robots).toContain('Allow: /');
+  expect(robots).toContain('Disallow: /admin');
+});
+
+for (const { path, heading } of staticPages) {
+  test(`${path} が表示でき、主要見出しが見える`, async ({ page }) => {
+    await page.goto(path);
+    await expect(page.getByRole('heading', { name: heading })).toBeVisible();
+  });
+}
+
+test('管理画面系ページに noindex metadata が設定されている', async ({ page }) => {
+  await page.goto('/admin/login');
+  await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', /noindex/);
+
+  await page.goto('/admin');
+  await expect(page).toHaveURL(/\/admin(?:\/login)?/);
+  await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', /noindex/);
 });

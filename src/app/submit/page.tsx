@@ -3,6 +3,15 @@ import { Container } from '@/components/ui/Container';
 import { SectionCard } from '@/components/ui/SectionCard';
 import { getActiveCategories } from '@/lib/queries/categories';
 
+import { createPageMetadata } from '@/lib/seo';
+export const metadata = createPageMetadata({
+  title: 'あるあるを投稿する',
+  description: 'あなたの身近な職業・学校・動物・趣味などの「あるある」を投稿して、みんなの共感を集めましょう。',
+  path: '/submit',
+});
+
+export const dynamic = 'force-dynamic';
+
 export default async function SubmitPage() {
   const categories = await getActiveCategories();
 
