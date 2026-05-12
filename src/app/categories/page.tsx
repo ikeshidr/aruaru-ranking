@@ -2,6 +2,15 @@ import { CategoryCard } from '@/components/categories/CategoryCard';
 import { Container } from '@/components/ui/Container';
 import { getActiveCategories } from '@/lib/queries/categories';
 
+import { createPageMetadata } from '@/lib/seo';
+export const metadata = createPageMetadata({
+  title: 'カテゴリー一覧',
+  description: '職業・学校・動物・趣味など、いろいろなカテゴリーのあるあるを探せるカテゴリー一覧ページです。',
+  path: '/categories',
+});
+
+export const dynamic = 'force-dynamic';
+
 export default async function CategoriesPage() {
   const categories = await getActiveCategories();
 

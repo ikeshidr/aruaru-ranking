@@ -1,3 +1,4 @@
+import type { Metadata } from 'next';
 import { redirect } from 'next/navigation';
 import { AdminLoginForm } from '@/components/admin/AdminLoginForm';
 import { Container } from '@/components/ui/Container';
@@ -5,6 +6,15 @@ import { SectionCard } from '@/components/ui/SectionCard';
 import { getCurrentAdminUser } from '@/lib/queries/admin';
 
 export const dynamic = 'force-dynamic';
+
+export const metadata: Metadata = {
+  title: '管理者ログイン',
+  robots: {
+    index: false,
+    follow: false,
+  },
+};
+
 
 export default async function AdminLoginPage() {
   const adminUser = await getCurrentAdminUser();

@@ -1,3 +1,4 @@
+import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { CommentForm } from '@/components/comments/CommentForm';
 import { CommentList } from '@/components/comments/CommentList';
@@ -6,10 +7,33 @@ import { Container } from '@/components/ui/Container';
 import { SectionCard } from '@/components/ui/SectionCard';
 import { getPublicComments } from '@/lib/queries/comments';
 import { getPostDetail } from '@/lib/queries/posts';
+import { createPageMetadata, truncateDescription } from '@/lib/seo';
 
 type PostDetailPageProps = {
   params: Promise<{ id: string }>;
 };
+
+export async function generateMetadata({ params }: PostDetailPageProps): Promise<Metadata> {
+  const { id } = await params;
+  const post = await getPostDetail(id);
+
+  if (!post) {
+    return createPageMetadata({
+      title: 'あるあるが見つかりません',
+      description: '指定されたあるある投稿は見つかりませんでした。',
+      path: `/posts/${id}`,
+    });
+  }
+
+  const categoryTitle = post.categories?.title ?? 'あるある';
+
+  return createPageMetadata({
+    title: `${truncateDescription(post.body, 32)} - ${categoryTitle}`,
+    description: truncateDescription(`${categoryTitle}のあるある「${post.body}」に投票・コメントして、みんなの共感ランキングを楽しみましょう。`),
+    path: `/posts/${post.id}`,
+    type: 'article',
+  });
+}
 
 export default async function PostDetailPage({ params }: PostDetailPageProps) {
   const { id } = await params;

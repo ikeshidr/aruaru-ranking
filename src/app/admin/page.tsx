@@ -1,3 +1,4 @@
+import type { Metadata } from 'next';
 import { redirect } from 'next/navigation';
 import { PendingPostList } from '@/components/admin/PendingPostList';
 import { adminLogoutAction } from '@/lib/actions/admin';
@@ -6,6 +7,15 @@ import { SectionCard } from '@/components/ui/SectionCard';
 import { getCurrentAdminUser, getPendingPostsForAdmin } from '@/lib/queries/admin';
 
 export const dynamic = 'force-dynamic';
+
+export const metadata: Metadata = {
+  title: '管理画面',
+  robots: {
+    index: false,
+    follow: false,
+  },
+};
+
 
 export default async function AdminPage() {
   const adminUser = await getCurrentAdminUser();
