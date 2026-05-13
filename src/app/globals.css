@@ -6,7 +6,6 @@
 
 body {
   @apply bg-[#fff8ed] text-slate-800 antialiased;
-  font-family: "Hiragino Maru Gothic ProN", "Hiragino Sans", "Yu Gothic", "Noto Sans JP", system-ui, sans-serif;
 }
 
 a {
