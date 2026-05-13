@@ -1,6 +1,10 @@
 import Link from 'next/link';
 import { CategoryGlyph } from '@/components/categories/CategoryGlyph';
-import { TagPill } from '@/components/ui/TagPill';
+
+const compactDescription = (description: string | null) => {
+  if (!description) return 'このカテゴリーのあるあるを見てみよう！';
+  return description.length > 28 ? `${description.slice(0, 28)}…` : description;
+};
 
 type CategoryCardProps = {
   category: {
@@ -18,25 +22,13 @@ export function CategoryCard({ category }: CategoryCardProps) {
   return (
     <Link
       href={`/categories/${category.slug}`}
-      className="block rounded-[24px] border border-slate-100 bg-white p-5 text-left shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
+      className="group block rounded-[18px] border border-slate-100 bg-white p-4 text-center shadow-sm transition hover:-translate-y-0.5 hover:shadow-lg hover:shadow-orange-100/70"
     >
-      <div className="mb-4 flex items-center gap-4">
-        <CategoryGlyph iconKey={category.icon_key} className="h-16 w-16 text-3xl" />
-        <div>
-          <div className="text-xl font-black text-slate-900">{category.title}</div>
-          <div className="mt-1 text-xs font-black text-slate-400">{category.group_name}</div>
-        </div>
-      </div>
-
-      <p className="line-clamp-2 text-sm font-bold leading-6 text-slate-600">
-        {category.description ?? 'このカテゴリーのあるあるを見てみよう！'}
+      <CategoryGlyph iconKey={category.icon_key} className="mx-auto h-20 w-20 rounded-full bg-gradient-to-br from-orange-50 to-rose-50 text-4xl" />
+      <div className="mt-3 text-base font-black text-slate-900 group-hover:text-orange-500">{category.title}</div>
+      <p className="mx-auto mt-1 line-clamp-2 min-h-[40px] max-w-[13rem] text-xs font-bold leading-5 text-slate-500">
+        {compactDescription(category.description)}
       </p>
-
-      <div className="mt-4 flex flex-wrap gap-2">
-        {(category.tags ?? []).slice(0, 3).map((tag) => (
-          <TagPill key={tag} tag={tag} />
-        ))}
-      </div>
     </Link>
   );
 }
