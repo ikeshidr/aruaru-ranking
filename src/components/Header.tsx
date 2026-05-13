@@ -1,55 +1,38 @@
 import Link from 'next/link';
 
 const navItems = [
-  { label: 'ランキング', href: '/ranking', icon: '🏆' },
-  { label: 'カテゴリー一覧', href: '/categories', icon: '▦' },
-  { label: '投稿する', href: '/submit', icon: '✎' },
+  { label: 'ランキング', href: '/ranking' },
+  { label: 'カテゴリー一覧', href: '/categories' },
+  { label: '投稿する', href: '/submit' },
 ];
 
 export function Header() {
   return (
-    <header className="sticky top-0 z-20 border-b border-orange-100/80 bg-white/95 shadow-sm shadow-orange-100/30 backdrop-blur">
-      <div className="mx-auto max-w-7xl px-4 py-3 sm:px-6">
+    <header className="sticky top-0 z-20 border-b border-orange-100 bg-white/95 backdrop-blur">
+      <div className="mx-auto max-w-6xl px-4 py-3">
         <div className="flex flex-wrap items-center gap-3 lg:flex-nowrap lg:justify-between">
-          <Link href="/" className="group flex min-w-0 items-center gap-2 text-2xl font-black tracking-tight text-orange-500">
-            <span className="relative whitespace-nowrap">
+          <div className="min-w-0">
+            <Link href="/" className="block text-xl font-black tracking-tight text-orange-500">
               あるあるランキング
-              <span aria-hidden className="absolute -right-5 -top-3 rotate-12 text-lg text-amber-400 transition group-hover:-translate-y-0.5">
-                ♛
-              </span>
-            </span>
-          </Link>
+            </Link>
+            <p className="text-xs font-bold text-slate-500">みんなの『あるある』で毎日もっと楽しく！</p>
+          </div>
 
-          <nav className="order-3 flex w-full gap-1 overflow-x-auto text-sm font-black text-slate-700 lg:order-2 lg:w-auto lg:justify-center">
+          <nav className="order-3 flex w-full gap-2 overflow-x-auto text-sm font-black text-slate-600 lg:order-2 lg:w-auto lg:justify-center">
             {navItems.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className="flex shrink-0 items-center gap-1.5 rounded-full px-3.5 py-2 hover:bg-orange-50 hover:text-orange-500"
-              >
-                <span aria-hidden>{item.icon}</span>
+              <Link key={item.href} href={item.href} className="whitespace-nowrap rounded-full px-3 py-1.5 hover:bg-orange-50 hover:text-orange-500">
                 {item.label}
               </Link>
             ))}
           </nav>
 
           <div className="order-2 ml-auto flex items-center gap-2 lg:order-3">
-            <label className="relative hidden md:block">
-              <span className="sr-only">キーワードで検索</span>
-              <input
-                className="w-56 rounded-2xl border border-slate-200 bg-white px-4 py-2.5 pr-10 text-sm font-bold outline-none ring-orange-200 placeholder:text-slate-400 focus:border-orange-200 focus:ring-2"
-                placeholder="キーワードで検索"
-              />
-              <span aria-hidden className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500">
-                🔍
-              </span>
-            </label>
-            <Link
-              href="/submit"
-              className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-orange-500 to-orange-400 px-4 py-2.5 text-sm font-black text-white shadow-lg shadow-orange-200/70 hover:-translate-y-0.5"
-            >
-              <span aria-hidden>✎</span>
-              投稿する
+            <input
+              className="hidden w-52 rounded-full border border-orange-100 bg-orange-50/40 px-4 py-2 text-sm font-bold outline-none ring-orange-200 placeholder:text-slate-400 focus:ring-2 md:block"
+              placeholder="キーワードで検索"
+            />
+            <Link href="/submit" className="rounded-full bg-gradient-to-r from-orange-400 to-rose-400 px-4 py-2 text-sm font-black text-white shadow-sm">
+              あるあるを投稿する
             </Link>
           </div>
         </div>
