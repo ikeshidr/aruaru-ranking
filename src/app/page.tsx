@@ -30,9 +30,8 @@ export default async function Home() {
 
   return (
     <main>
+      <HomeHero />
       <Container className="space-y-7 py-5 sm:py-6">
-        <HomeHero />
-
         <section>
           <div className="mb-4 flex items-end justify-between gap-4">
             <div>
