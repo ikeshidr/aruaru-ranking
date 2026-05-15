@@ -38,7 +38,7 @@ begin
     select 1
     from public.posts
     where id = p_post_id
-      p.status::text = 'approved'
+      and status::text = 'approved'
       and deleted_at is null
   ) then
     raise exception 'Post is not available for voting' using errcode = 'P0002';
