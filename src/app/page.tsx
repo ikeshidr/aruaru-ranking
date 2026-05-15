@@ -1,3 +1,5 @@
+import Link from 'next/link';
+
 import { CategoryCard } from '@/components/categories/CategoryCard';
 import { HomeHero } from '@/components/home/HomeHero';
 import { WideAd } from '@/components/home/WideAd';
@@ -25,20 +27,22 @@ export default async function Home() {
   ]);
 
   const popularCategories = categories.slice(0, 6);
-  const todayPopular = rankingPosts.slice(5, 10);
   const latestPosts = approvedPosts.slice(0, 5);
 
   return (
-    <main>
+    <main className="bg-[linear-gradient(180deg,#fffdf8_0%,#fff8ed_48%,#fffdf8_100%)]">
       <Container className="space-y-7 py-5 sm:py-6">
         <HomeHero />
 
-        <section>
+        <section className="rounded-[28px] bg-orange-50/55 p-4 sm:p-6">
           <div className="mb-4 flex items-end justify-between gap-4">
             <div>
               <p className="text-xs font-black tracking-[0.18em] text-orange-500">POPULAR CATEGORIES</p>
-              <h2 className="mt-1 text-2xl font-black text-slate-950">人気カテゴリー</h2>
+              <h2 className="mt-1 text-2xl font-black text-slate-950">人気カテゴリーから探す</h2>
             </div>
+            <Link href="/categories" className="hidden text-sm font-black text-sky-500 hover:text-sky-600 sm:inline-flex">
+              すべて見る ›
+            </Link>
           </div>
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-6">
             {popularCategories.map((category) => (
@@ -47,50 +51,63 @@ export default async function Home() {
           </div>
         </section>
 
-        <WideAd label="広告バナー" />
-
         <section className="grid gap-6 lg:grid-cols-[1fr_300px]">
-          <SectionCard className="p-0 sm:p-0">
-            <div className="flex items-center justify-between gap-3 border-b border-slate-100 px-5 py-4 sm:px-6">
-              <div>
-                <p className="text-xs font-black tracking-[0.18em] text-orange-500">RANKING</p>
-                <h2 className="mt-1 text-2xl font-black text-slate-950">総合ランキング</h2>
+          <div className="space-y-4">
+            <SectionCard className="overflow-hidden p-0 sm:p-0">
+              <div className="flex items-center justify-between gap-3 border-b border-slate-100 px-5 py-4 sm:px-6">
+                <div>
+                  <p className="text-xs font-black tracking-[0.18em] text-orange-500">RANKING</p>
+                  <h2 className="mt-1 text-2xl font-black text-slate-950">総合ランキング</h2>
+                </div>
+                <Link href="/ranking" className="text-sm font-black text-sky-500 hover:text-sky-600">
+                  すべて見る ›
+                </Link>
               </div>
-            </div>
-            <div>
-              {rankingPosts.slice(0, 5).map((post, index) => (
-                <RankingPostCard key={post.id} rank={index + 1} post={post} />
-              ))}
-            </div>
-          </SectionCard>
+              <div>
+                {rankingPosts.slice(0, 5).map((post, index) => (
+                  <RankingPostCard key={post.id} rank={index + 1} post={post} />
+                ))}
+              </div>
+            </SectionCard>
 
-          <aside>
-            <WideAd label="広告バナー" variant="vertical" className="h-full" />
+            <WideAd label="広告バナー" />
+          </div>
+
+          <aside className="lg:sticky lg:top-24 lg:self-start">
+            <WideAd label="広告バナー" variant="vertical" />
           </aside>
         </section>
 
-        <section className="grid gap-6 lg:grid-cols-2">
-          <SectionCard className="p-0 sm:p-0">
-            <div className="flex items-center justify-between gap-3 border-b border-slate-100 px-5 py-4 sm:px-6">
-              <h2 className="text-xl font-black text-slate-950">🔥 今日の人気あるある</h2>
-            </div>
-            <div>
-              {todayPopular.length === 0 ? (
-                <p className="p-5 text-sm font-bold text-slate-400">該当する人気あるあるがありません</p>
-              ) : (
-                todayPopular.map((post, index) => <RankingPostCard key={post.id} rank={index + 1} post={post} compact />)
-              )}
-            </div>
-          </SectionCard>
-
+        <section className="grid gap-6 lg:grid-cols-[1.05fr_0.95fr]">
           <SectionCard>
-            <h2 className="mb-4 text-xl font-black text-slate-950">🕒 新着あるある</h2>
+            <div className="mb-4 flex items-center justify-between gap-3">
+              <h2 className="text-xl font-black text-slate-950">🕒 新着あるある</h2>
+              <Link href="/ranking" className="text-sm font-black text-sky-500 hover:text-sky-600">
+                もっと見る ›
+              </Link>
+            </div>
             <div className="space-y-4">
               {latestPosts.length === 0 ? (
                 <p className="font-bold text-slate-400">新着あるあるはまだありません。</p>
               ) : (
                 latestPosts.map((post) => <PostCard key={post.id} post={post} />)
               )}
+            </div>
+          </SectionCard>
+
+          <SectionCard>
+            <div className="mb-4 flex items-center justify-between gap-3">
+              <h2 className="text-xl font-black text-slate-950">注目のタグ</h2>
+              <Link href="/categories" className="text-sm font-black text-sky-500 hover:text-sky-600">
+                もっと見る ›
+              </Link>
+            </div>
+            <div className="flex flex-wrap gap-3">
+              {['夜勤', '新人', '上司', 'クレーム', '社会人', '学生', 'あるあるw', '仕事疲れ', '休日', '接客', '動物', '子育て'].map((tag) => (
+                <span key={tag} className="rounded-full bg-orange-50 px-4 py-2 text-sm font-black text-slate-600">
+                  # {tag}
+                </span>
+              ))}
             </div>
           </SectionCard>
         </section>
