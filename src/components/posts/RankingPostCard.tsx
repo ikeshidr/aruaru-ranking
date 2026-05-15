@@ -1,33 +1,36 @@
 import Link from 'next/link';
 import { RankMedal } from '@/components/ui/RankMedal';
 import { formatNumber } from '@/lib/utils/format';
+import { getCategoryPillClass } from '@/lib/utils/categoryColor';
 
 type RankingPostCardProps = {
   rank: number;
   post: {
     id: string;
     body: string;
-    author_name: string | null;
     vote_count: number;
-    comment_count: number;
-    tags: string[] | null;
     categories?: {
       slug: string;
       title: string;
+      group_name?: string | null;
     } | null;
   };
-  compact?: boolean;
 };
 
-export function RankingPostCard({ rank, post, compact = false }: RankingPostCardProps) {
+export function RankingPostCard({ rank, post }: RankingPostCardProps) {
+  const pillClass = getCategoryPillClass({
+    slug: post.categories?.slug,
+    groupName: post.categories?.group_name,
+  });
+
   return (
-    <article className="grid items-center gap-3 border-b border-slate-100 bg-white px-3 py-3 last:border-b-0 sm:grid-cols-[auto_1fr_auto] sm:gap-4">
+    <article className="grid items-center gap-3 border-b border-slate-100 bg-white px-4 py-4 last:border-b-0 sm:grid-cols-[auto_1fr_auto] sm:gap-4">
       <div className="flex items-center gap-3">
-        <RankMedal rank={rank} mini={compact || rank > 3} />
+        <RankMedal rank={rank} />
         {post.categories ? (
           <Link
             href={`/categories/${post.categories.slug}`}
-            className="min-w-20 rounded-full bg-orange-50 px-3 py-1 text-center text-xs font-black text-orange-500 hover:bg-orange-100"
+            className={`min-w-20 rounded-full px-3 py-1 text-center text-xs font-bold transition hover:opacity-80 ${pillClass}`}
           >
             {post.categories.title}
           </Link>
@@ -37,21 +40,15 @@ export function RankingPostCard({ rank, post, compact = false }: RankingPostCard
       <div className="min-w-0">
         <Link
           href={`/posts/${post.id}`}
-          className={`${compact ? 'text-sm' : 'text-base'} line-clamp-2 font-black leading-7 text-slate-900 hover:text-orange-500`}
+          className="line-clamp-2 text-base font-extrabold leading-7 text-text hover:text-primary"
         >
           {post.body}
         </Link>
-        {!compact ? <p className="mt-1 text-xs font-bold text-slate-400">by {post.author_name ?? '匿名さん'} ・ コメント {formatNumber(post.comment_count)}</p> : null}
       </div>
 
-      <div className="flex items-center justify-between gap-3 sm:justify-end">
-        <span className="whitespace-nowrap text-sm font-black text-slate-700">👍 {formatNumber(post.vote_count)}</span>
-        <Link
-          href={`/posts/${post.id}`}
-          className="whitespace-nowrap rounded-full border border-orange-200 bg-orange-50 px-4 py-2 text-sm font-black text-orange-500 hover:bg-orange-500 hover:text-white"
-        >
-          あるあるw
-        </Link>
+      <div className="flex items-center gap-1.5 sm:justify-end">
+        <span aria-hidden="true" className="text-base leading-none">👍</span>
+        <span className="whitespace-nowrap text-base font-black text-primary">{formatNumber(post.vote_count)}</span>
       </div>
     </article>
   );

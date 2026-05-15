@@ -1,17 +1,28 @@
+'use client';
+
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 
 const navItems = [
+  { label: 'ホーム', href: '/', icon: '🏠' },
+  { label: 'カテゴリ', href: '/categories', icon: '📂' },
   { label: 'ランキング', href: '/ranking', icon: '🏆' },
-  { label: 'カテゴリー一覧', href: '/categories', icon: '▦' },
-  { label: '投稿する', href: '/submit', icon: '✎' },
+  { label: '新着', href: '/new', icon: '✨' },
 ];
 
+function isActive(pathname: string, href: string) {
+  if (href === '/') return pathname === '/';
+  return pathname === href || pathname.startsWith(`${href}/`);
+}
+
 export function Header() {
+  const pathname = usePathname();
+
   return (
     <header className="sticky top-0 z-20 border-b border-orange-100/80 bg-white/95 shadow-sm shadow-orange-100/30 backdrop-blur">
       <div className="mx-auto max-w-7xl px-4 py-3 sm:px-6">
         <div className="flex flex-wrap items-center gap-3 lg:flex-nowrap lg:justify-between">
-          <Link href="/" className="group flex min-w-0 items-center gap-2 text-2xl font-black tracking-tight text-orange-500">
+          <Link href="/" className="group flex min-w-0 items-center gap-2 text-2xl font-black tracking-tight text-primary">
             <span className="relative whitespace-nowrap">
               あるあるランキング
               <span aria-hidden className="absolute -right-5 -top-3 rotate-12 text-lg text-amber-400 transition group-hover:-translate-y-0.5">
@@ -20,17 +31,24 @@ export function Header() {
             </span>
           </Link>
 
-          <nav className="order-3 flex w-full gap-1 overflow-x-auto text-sm font-black text-slate-700 lg:order-2 lg:w-auto lg:justify-center">
-            {navItems.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className="flex shrink-0 items-center gap-1.5 rounded-full px-3.5 py-2 hover:bg-orange-50 hover:text-orange-500"
-              >
-                <span aria-hidden>{item.icon}</span>
-                {item.label}
-              </Link>
-            ))}
+          <nav className="order-3 flex w-full gap-1 overflow-x-auto text-sm font-bold lg:order-2 lg:w-auto lg:justify-center">
+            {navItems.map((item) => {
+              const active = isActive(pathname ?? '/', item.href);
+              const classes = active
+                ? 'bg-primary-light text-primary'
+                : 'text-gray-600 hover:bg-primary-soft hover:text-primary';
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  aria-current={active ? 'page' : undefined}
+                  className={`flex shrink-0 items-center gap-1.5 rounded-lg px-3 py-2 transition ${classes}`}
+                >
+                  <span aria-hidden>{item.icon}</span>
+                  {item.label}
+                </Link>
+              );
+            })}
           </nav>
 
           <div className="order-2 ml-auto flex items-center gap-2 lg:order-3">

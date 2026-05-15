@@ -1,12 +1,15 @@
 @import 'tailwindcss';
+@config '../../tailwind.config.ts';
 
 :root {
   color-scheme: light;
+  --medal-gold: linear-gradient(135deg, #ffd93c 0%, #ffa830 100%);
+  --medal-silver: linear-gradient(135deg, #dde2e7 0%, #a8b2bb 100%);
+  --medal-bronze: linear-gradient(135deg, #e6b08c 0%, #b27a52 100%);
 }
 
 body {
-  @apply bg-[#fff8ed] text-slate-800 antialiased;
-  font-family: "Hiragino Maru Gothic ProN", "Hiragino Sans", "Yu Gothic", "Noto Sans JP", system-ui, sans-serif;
+  @apply bg-bg text-text font-rounded antialiased;
 }
 
 a {

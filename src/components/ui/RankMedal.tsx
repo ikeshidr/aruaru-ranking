@@ -1,22 +1,36 @@
 type RankMedalProps = {
   rank: number;
-  mini?: boolean;
 };
 
-export function RankMedal({ rank, mini = false }: RankMedalProps) {
-  const sizeClass = mini ? 'h-9 w-9 rounded-xl text-sm' : 'h-12 w-12 rounded-2xl text-lg';
-  const colorClass =
+export function RankMedal({ rank }: RankMedalProps) {
+  if (rank > 3) {
+    return (
+      <div className="relative grid h-11 w-11 place-items-center rounded-full bg-gray-100 text-sm font-black text-gray-500">
+        {rank}
+      </div>
+    );
+  }
+
+  const gradient =
     rank === 1
-      ? 'bg-[#f5bf17] text-white'
+      ? 'var(--medal-gold)'
       : rank === 2
-        ? 'bg-[#9fb2c9] text-white'
-        : rank === 3
-          ? 'bg-[#ef9a45] text-white'
-          : 'bg-slate-100 text-slate-500';
+        ? 'var(--medal-silver)'
+        : 'var(--medal-bronze)';
 
   return (
-    <div className={`relative grid place-items-center font-black shadow-sm ${sizeClass} ${colorClass}`}>
-      {!mini && rank === 1 ? <span className="absolute -top-3 text-[14px]">👑</span> : null}
+    <div
+      className="relative grid h-11 w-11 place-items-center rounded-full font-black text-white shadow-md"
+      style={{ background: gradient }}
+    >
+      {rank === 1 ? (
+        <span
+          aria-hidden="true"
+          className="pointer-events-none absolute -top-3.5 left-1/2 -translate-x-1/2 text-sm leading-none"
+        >
+          👑
+        </span>
+      ) : null}
       {rank}
     </div>
   );
