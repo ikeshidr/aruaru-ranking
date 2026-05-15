@@ -30,7 +30,7 @@ export function HomeHero() {
             <Link
               style={{ flexShrink: 0 }}
               href="/submit"
-              className="inline-flex w-auto items-center gap-2 rounded-full bg-[linear-gradient(135deg,#FF8C42_0%,#FF6420_100%)] px-6 py-3 text-sm font-black text-white shadow-card transition hover:opacity-95"
+              className="inline-flex w-auto items-center gap-2 rounded-full bg-[linear-gradient(135deg,#FF8C42_0%,#E55A14_100%)] px-6 py-3 text-sm font-black text-white shadow-card transition hover:opacity-95"
             >
               <span aria-hidden="true" className="text-lg leading-none">＋</span>
               あるあるを投稿する

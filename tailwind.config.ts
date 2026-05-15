@@ -10,7 +10,7 @@ const config: Config = {
       colors: {
         primary: {
           DEFAULT: '#FF7A35',
-          hover: '#FF6420',
+          hover: '#E55A14',
           light: '#FFE8D6',
           soft: '#FFF4E6',
         },
@@ -19,16 +19,16 @@ const config: Config = {
         border: '#F0EDE8',
         text: {
           DEFAULT: '#2D2D33',
-          muted: '#8B8B95',
-          faint: '#BFBFC8',
+          muted: '#6C6C76',
+          faint: '#6E6E78',
         },
         category: {
-          student: { DEFAULT: '#FF5A6E', bg: '#FFE5E9' },
-          work: { DEFAULT: '#3672FF', bg: '#E3EAFF' },
-          daily: { DEFAULT: '#29B164', bg: '#DEFAEA' },
-          hobby: { DEFAULT: '#9966FF', bg: '#EFE5FF' },
-          love: { DEFAULT: '#FF5FA3', bg: '#FFE1EF' },
-          family: { DEFAULT: '#D68A2C', bg: '#FFF0D9' },
+          student: { DEFAULT: '#C4192F', bg: '#FFE5E9' },
+          work: { DEFAULT: '#1A50D9', bg: '#E3EAFF' },
+          daily: { DEFAULT: '#1A7A42', bg: '#DEFAEA' },
+          hobby: { DEFAULT: '#6B3FCC', bg: '#EFE5FF' },
+          love: { DEFAULT: '#CC2070', bg: '#FFE1EF' },
+          family: { DEFAULT: '#A66015', bg: '#FFF0D9' },
         },
       },
       borderRadius: {
