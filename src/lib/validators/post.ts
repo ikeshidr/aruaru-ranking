@@ -1,10 +1,9 @@
+import { UUID_PATTERN, countCharacters, normalizeText } from './common';
+
 export const MIN_POST_BODY_LENGTH = 10;
 export const MAX_POST_BODY_LENGTH = 120;
 export const MAX_POST_AUTHOR_NAME_LENGTH = 30;
 export const DEFAULT_AUTHOR_NAME = '匿名さん';
-
-const UUID_PATTERN =
-  /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
 export type SubmitPostValues = {
   categoryId: string;
@@ -24,14 +23,6 @@ export type SubmitPostValidationResult =
       values: SubmitPostValues;
       fieldErrors: SubmitPostFieldErrors;
     };
-
-function countCharacters(value: string) {
-  return Array.from(value).length;
-}
-
-function normalizeText(value: string) {
-  return value.trim();
-}
 
 export function validateSubmitPost(values: SubmitPostValues): SubmitPostValidationResult {
   const normalizedValues: SubmitPostValues = {

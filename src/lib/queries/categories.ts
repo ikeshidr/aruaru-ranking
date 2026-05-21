@@ -2,11 +2,14 @@ import type { PostgrestError } from "@supabase/supabase-js";
 import { createClient } from "@/lib/supabase/server";
 
 function throwQueryError(error: PostgrestError | null, context: string) {
-  if (error) throw new Error(`${context}: ${error.message}`);
+  if (error) {
+    console.error(`${context}:`, error);
+    throw new Error('データの取得に失敗しました');
+  }
 }
 
 const CATEGORY_SELECT =
-  "id, slug, name, title, group_name, description, icon_key, tags, sort_order, is_active";
+  "id, slug, title, group_name, description, icon_key, tags, sort_order, is_active";
 
 export async function getActiveCategories() {
   const supabase = await createClient();

@@ -1,10 +1,9 @@
+import { UUID_PATTERN, countCharacters, normalizeText } from './common';
+
 export const MIN_COMMENT_BODY_LENGTH = 1;
 export const MAX_COMMENT_BODY_LENGTH = 300;
 export const MAX_COMMENT_AUTHOR_NAME_LENGTH = 40;
 export const DEFAULT_COMMENT_AUTHOR_NAME = '匿名さん';
-
-const UUID_PATTERN =
-  /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
 export type SubmitCommentValues = {
   postId: string;
@@ -24,14 +23,6 @@ export type SubmitCommentValidationResult =
       values: SubmitCommentValues;
       fieldErrors: SubmitCommentFieldErrors;
     };
-
-function countCharacters(value: string) {
-  return Array.from(value).length;
-}
-
-function normalizeText(value: string) {
-  return value.trim();
-}
 
 export function validateSubmitComment(values: SubmitCommentValues): SubmitCommentValidationResult {
   const normalizedValues: SubmitCommentValues = {
