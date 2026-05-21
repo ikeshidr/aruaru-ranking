@@ -1,10 +1,10 @@
 import type { Metadata } from 'next';
 import { redirect } from 'next/navigation';
-import { PendingPostList } from '@/components/admin/PendingPostList';
+import { ModeratePostList } from '@/components/admin/ModeratePostList';
 import { adminLogoutAction } from '@/lib/actions/admin';
 import { Container } from '@/components/ui/Container';
 import { SectionCard } from '@/components/ui/SectionCard';
-import { getCurrentAdminUser, getPendingPostsForAdmin } from '@/lib/queries/admin';
+import { getCurrentAdminUser, getPublicPostsForModeration, getReportCountsByPostId } from '@/lib/queries/admin';
 
 export const dynamic = 'force-dynamic';
 
@@ -24,7 +24,8 @@ export default async function AdminPage() {
     redirect('/admin/login');
   }
 
-  const pendingPosts = await getPendingPostsForAdmin();
+  const posts = await getPublicPostsForModeration();
+  const reportCounts = await getReportCountsByPostId(posts.map((p) => p.id));
 
   return (
     <main>
@@ -35,7 +36,7 @@ export default async function AdminPage() {
               <p className="text-sm font-black text-orange-500">ADMIN</p>
               <h1 className="mt-2 text-3xl font-black text-slate-950 sm:text-5xl">管理画面</h1>
               <p className="mt-4 max-w-2xl font-bold leading-8 text-slate-600">
-                承認待ち投稿を確認し、問題ない投稿は公開、公開しない投稿は非公開にできます。
+                公開中の投稿を監視し、ガイドライン違反や不適切な内容は「非公開にする」で即時対応できます。
               </p>
             </div>
             <form action={adminLogoutAction}>
@@ -53,20 +54,21 @@ export default async function AdminPage() {
           <section className="space-y-4">
             <div className="flex flex-wrap items-end justify-between gap-3">
               <div>
-                <h2 className="text-2xl font-black text-slate-950">承認待ち投稿</h2>
-                <p className="mt-2 text-sm font-bold text-slate-500">{pendingPosts.length}件の投稿が確認待ちです。</p>
+                <h2 className="text-2xl font-black text-slate-950">公開中の投稿（事後モデレーション）</h2>
+                <p className="mt-2 text-sm font-bold text-slate-500">公開中の投稿を確認し、ガイドライン違反があれば非公開にできます。直近 50 件を表示しています。</p>
               </div>
             </div>
-            <PendingPostList posts={pendingPosts} />
+            <ModeratePostList posts={posts} reportCounts={reportCounts} />
           </section>
 
           <aside className="space-y-5">
             <SectionCard>
-              <h2 className="text-lg font-black text-slate-950">公開ルール</h2>
+              <h2 className="text-lg font-black text-slate-950">モデレーションの目安</h2>
               <ul className="mt-4 space-y-3 text-sm font-bold leading-7 text-slate-600">
-                <li>・承認すると status が approved になり、公開画面に表示されます。</li>
-                <li>・却下すると status が rejected になり、公開画面には表示されません。</li>
-                <li>・Supabaseの詳細エラーはユーザー画面には表示しません。</li>
+                <li>・個人情報・連絡先が含まれる投稿</li>
+                <li>・特定個人への誹謗中傷・差別的表現</li>
+                <li>・スパム・宣伝目的とみられる投稿</li>
+                <li>・その他ガイドライン違反の疑いがある投稿</li>
               </ul>
             </SectionCard>
 

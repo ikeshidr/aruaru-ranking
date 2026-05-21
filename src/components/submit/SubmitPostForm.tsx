@@ -1,6 +1,6 @@
 'use client';
 
-import { useActionState, useEffect, useRef } from 'react';
+import { useActionState } from 'react';
 import { submitPostAction } from '@/lib/actions/posts';
 import { initialSubmitPostActionState } from '@/lib/submit/submitPostState';
 import { MAX_POST_AUTHOR_NAME_LENGTH, MAX_POST_BODY_LENGTH, MIN_POST_BODY_LENGTH } from '@/lib/validators/post';
@@ -21,25 +21,14 @@ const emptyValues = {
 
 export function SubmitPostForm({ categories }: SubmitPostFormProps) {
   const [state, formAction, isPending] = useActionState(submitPostAction, initialSubmitPostActionState);
-  const formRef = useRef<HTMLFormElement>(null);
   const values = state.values ?? emptyValues;
 
-  useEffect(() => {
-    if (state.status === 'success') {
-      formRef.current?.reset();
-    }
-  }, [state.status]);
-
   return (
-    <form ref={formRef} action={formAction} className="space-y-6">
+    <form action={formAction} className="space-y-6">
       {state.message ? (
         <div
-          className={`rounded-[24px] border px-5 py-4 text-sm font-black ${
-            state.status === 'success'
-              ? 'border-emerald-100 bg-emerald-50 text-emerald-700'
-              : 'border-rose-100 bg-rose-50 text-rose-600'
-          }`}
-          role="status"
+          className="rounded-[24px] border border-rose-100 bg-rose-50 px-5 py-4 text-sm font-black text-rose-600"
+          role="alert"
         >
           {state.message}
         </div>
@@ -103,7 +92,7 @@ export function SubmitPostForm({ categories }: SubmitPostFormProps) {
       </label>
 
       <div className="rounded-[24px] bg-orange-50 px-5 py-4 text-sm font-bold leading-7 text-orange-700">
-        投稿はすぐには公開されません。管理者確認後、問題がなければランキングやカテゴリー画面に表示されます。
+        投稿するとすぐにランキングやカテゴリー画面に表示されます。内容をよく確認してから投稿してください。
       </div>
 
       <button
@@ -111,7 +100,7 @@ export function SubmitPostForm({ categories }: SubmitPostFormProps) {
         disabled={isPending}
         className="w-full rounded-full bg-gradient-to-r from-orange-400 to-rose-400 px-6 py-4 text-sm font-black text-white shadow-md shadow-orange-500/20 hover:opacity-95 disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
       >
-        {isPending ? '投稿中...' : '承認待ちとして投稿する'}
+        {isPending ? '投稿中...' : '投稿する'}
       </button>
     </form>
   );

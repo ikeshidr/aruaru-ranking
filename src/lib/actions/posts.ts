@@ -1,6 +1,7 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
+import { redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
 import type { SubmitPostActionState } from '@/lib/submit/submitPostState';
 import { getOrCreateVisitorId } from '@/lib/visitor/visitor-id';
@@ -71,10 +72,12 @@ export async function submitPostAction(
     author_name: validation.data.authorName || DEFAULT_AUTHOR_NAME,
     tags: [],
     visitor_id: visitorId,
+    status: 'approved',
+    approved_at: new Date().toISOString(),
   });
 
   if (insertError) {
-    console.error('Failed to insert pending post', insertError);
+    console.error('Failed to insert post', insertError);
 
     return {
       status: 'error',
@@ -84,16 +87,8 @@ export async function submitPostAction(
     };
   }
 
-  revalidatePath('/submit');
-
-  return {
-    status: 'success',
-    message: '投稿を受け付けました。管理者確認後に公開されます。',
-    fieldErrors: {},
-    values: {
-      categoryId: '',
-      body: '',
-      authorName: '',
-    },
-  };
+  revalidatePath('/');
+  revalidatePath('/ranking');
+  revalidatePath('/categories');
+  redirect('/');
 }

@@ -18,14 +18,16 @@ const PENDING_POST_SELECT = `
   categories (
     id,
     slug,
-    name,
     title,
     group_name
   )
 `;
 
 function throwQueryError(error: PostgrestError | null, context: string) {
-  if (error) throw new Error(`${context}: ${error.message}`);
+  if (error) {
+    console.error(`${context}:`, error);
+    throw new Error('データの取得に失敗しました');
+  }
 }
 
 export async function getCurrentAdminUser() {
@@ -49,16 +51,42 @@ export async function getCurrentAdminUser() {
   return isAdmin ? user : null;
 }
 
-export async function getPendingPostsForAdmin() {
+const MODERATION_LIMIT = 50;
+
+export async function getPublicPostsForModeration() {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from('posts')
     .select(PENDING_POST_SELECT)
-    .eq('status', 'pending')
+    .eq('status', 'approved')
     .is('deleted_at', null)
-    .order('created_at', { ascending: true });
+    .order('created_at', { ascending: false })
+    .limit(MODERATION_LIMIT);
 
-  throwQueryError(error, 'Failed to fetch pending posts');
+  throwQueryError(error, 'Failed to fetch public posts for moderation');
 
   return data ?? [];
+}
+
+export async function getReportCountsByPostId(postIds: string[]) {
+  if (postIds.length === 0) return {} as Record<string, number>;
+
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from('reports')
+    .select('post_id')
+    .eq('target_type', 'post')
+    .in('post_id', postIds);
+
+  if (error) {
+    console.error('Failed to fetch report counts', error);
+    return {} as Record<string, number>;
+  }
+
+  return (data ?? []).reduce<Record<string, number>>((acc, row) => {
+    if (!row.post_id) return acc;
+    acc[row.post_id] = (acc[row.post_id] ?? 0) + 1;
+    return acc;
+  }, {});
 }

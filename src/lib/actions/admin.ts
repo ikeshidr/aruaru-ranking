@@ -4,6 +4,7 @@ import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
 import type { AdminLoginActionState } from '@/lib/admin/adminActionState';
+import { UUID_PATTERN } from '@/lib/validators/common';
 
 const GENERIC_ADMIN_LOGIN_ERROR_MESSAGE = 'メールアドレスまたはパスワードを確認してください。';
 
@@ -98,84 +99,24 @@ export async function adminLogoutAction() {
   redirect('/admin/login');
 }
 
-export async function approvePostAction(formData: FormData) {
-  const postId = getFormValue(formData, 'postId');
-
-  if (!postId) {
-    console.error('Missing post id for approve action');
+export async function hidePostAction(formData: FormData): Promise<void> {
+  const postId = formData.get('postId');
+  if (typeof postId !== 'string' || !UUID_PATTERN.test(postId)) {
     return;
   }
 
-  const { supabase, user } = await requireAdmin();
-  const { error: updateError } = await supabase
+  const { supabase } = await requireAdmin();
+  const { error } = await supabase
     .from('posts')
-    .update({
-      status: 'approved',
-      approved_at: new Date().toISOString(),
-      rejected_at: null,
-    })
-    .eq('id', postId)
-    .eq('status', 'pending')
-    .is('deleted_at', null);
+    .update({ deleted_at: new Date().toISOString() })
+    .eq('id', postId);
 
-  if (updateError) {
-    console.error('Failed to approve post', updateError);
+  if (error) {
+    console.error('Failed to hide post', error);
     return;
-  }
-
-  const { error: logError } = await supabase.from('moderation_logs').insert({
-    target_type: 'post',
-    target_id: postId,
-    action: 'approve',
-    actor_user_id: user.id,
-  });
-
-  if (logError) {
-    console.error('Failed to record approve moderation log', logError);
   }
 
   revalidatePath('/admin');
   revalidatePath('/');
   revalidatePath('/ranking');
-  revalidatePath('/categories', 'layout');
-}
-
-
-export async function rejectPostAction(formData: FormData) {
-  const postId = getFormValue(formData, 'postId');
-
-  if (!postId) {
-    console.error('Missing post id for reject action');
-    return;
-  }
-
-  const { supabase, user } = await requireAdmin();
-  const { error: updateError } = await supabase
-    .from('posts')
-    .update({
-      status: 'rejected',
-      approved_at: null,
-      rejected_at: new Date().toISOString(),
-    })
-    .eq('id', postId)
-    .eq('status', 'pending')
-    .is('deleted_at', null);
-
-  if (updateError) {
-    console.error('Failed to reject post', updateError);
-    return;
-  }
-
-  const { error: logError } = await supabase.from('moderation_logs').insert({
-    target_type: 'post',
-    target_id: postId,
-    action: 'reject',
-    actor_user_id: user.id,
-  });
-
-  if (logError) {
-    console.error('Failed to record reject moderation log', logError);
-  }
-
-  revalidatePath('/admin');
 }
