@@ -4,7 +4,7 @@ import Link from 'next/link';
 export function HomeHero() {
   return (
     <section className="px-4 pt-5 sm:pt-6">
-      <div className="relative mx-auto max-w-screen-xl overflow-hidden rounded-[28px] bg-primary-soft">
+      <div className="relative mx-auto max-w-screen-xl overflow-hidden rounded-[28px] bg-primary-soft md:min-h-[420px]">
         <Image
           src="/home-hero-people.png"
           alt=""

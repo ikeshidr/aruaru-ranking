@@ -1,27 +1,107 @@
+import Link from 'next/link';
+import Script from 'next/script';
+
+const ADSENSE_CLIENT_ID = process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID ?? '';
+
 type WideAdProps = {
+  /** 広告枠の AdSense data-ad-slot 値 */
+  adSlot?: string;
   label?: string;
+  variant?: 'horizontal' | 'vertical';
   className?: string;
-  variant?: 'wide' | 'vertical';
 };
 
-export function WideAd({ label = '広告枠', className = '', variant = 'wide' }: WideAdProps) {
+/**
+ * 広告枠コンポーネント
+ *
+ * - NEXT_PUBLIC_ADSENSE_CLIENT_ID が設定済み → AdSense 広告を描画
+ * - 未設定（開発環境等） → 自社プロモのダミーバナーを描画
+ */
+export function WideAd({
+  adSlot,
+  label = '広告',
+  variant = 'horizontal',
+  className = '',
+}: WideAdProps) {
+  const isProduction = Boolean(ADSENSE_CLIENT_ID);
+  const heightClass = variant === 'vertical' ? 'min-h-[600px]' : 'min-h-[90px]';
+
+  if (isProduction && adSlot) {
+    return (
+      <>
+        <Script
+          async
+          src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_CLIENT_ID}`}
+          crossOrigin="anonymous"
+          strategy="lazyOnload"
+        />
+        <div
+          aria-label={`広告枠: ${label}`}
+          className={`overflow-hidden rounded-[24px] ${heightClass} ${className}`}
+        >
+          <ins
+            className="adsbygoogle"
+            style={{ display: 'block' }}
+            data-ad-client={ADSENSE_CLIENT_ID}
+            data-ad-slot={adSlot}
+            data-ad-format="auto"
+            data-full-width-responsive="true"
+          />
+          <script
+            dangerouslySetInnerHTML={{
+              __html: '(adsbygoogle = window.adsbygoogle || []).push({});',
+            }}
+          />
+        </div>
+      </>
+    );
+  }
+
+  // フォールバック: 自社プロモのダミーバナー
   if (variant === 'vertical') {
     return (
-      <div
-        className={`grid min-h-[360px] place-items-center rounded-[20px] border border-slate-100 bg-gradient-to-br from-white via-slate-50 to-slate-100 p-6 text-center shadow-sm ${className}`}
+      <Link
+        href="/submit"
+        className={[
+          'flex flex-col items-center justify-center gap-3 rounded-[24px]',
+          'border border-primary-light bg-primary-soft p-6 text-center',
+          'transition hover:bg-primary-light',
+          heightClass,
+          className,
+        ].join(' ')}
       >
-        <div>
-          <p className="text-lg font-black text-slate-500">{label}</p>
-          <p className="mt-2 text-sm font-bold text-slate-400">300×600 placeholder</p>
-        </div>
-      </div>
+        <span aria-hidden="true" className="text-5xl">✨</span>
+        <p className="text-2xl font-black leading-snug text-text">
+          あるあるを<br />投稿しよう
+        </p>
+        <p className="text-sm font-medium text-text-muted">無料で参加できます</p>
+        <span className="mt-2 inline-flex items-center gap-1 rounded-full bg-primary px-5 py-2.5 text-sm font-black text-white shadow-sm">
+          今すぐ投稿 →
+        </span>
+      </Link>
     );
   }
 
   return (
-    <div className={`rounded-2xl border border-slate-100 bg-gradient-to-r from-slate-50 via-white to-slate-50 p-5 text-center shadow-sm ${className}`}>
-      <p className="text-base font-black text-slate-500">{label}</p>
-      <p className="mt-1 text-xs font-bold text-slate-400">970×90 placeholder</p>
-    </div>
+    <Link
+      href="/submit"
+      className={[
+        'flex items-center justify-between gap-4 rounded-[24px]',
+        'border border-amber-100 bg-gradient-to-r from-amber-100 to-orange-50',
+        'px-5 py-4 transition hover:from-amber-200 hover:to-orange-100',
+        heightClass,
+        className,
+      ].join(' ')}
+    >
+      <div className="flex min-w-0 items-center gap-3">
+        <span aria-hidden="true" className="shrink-0 text-2xl">🏆</span>
+        <p className="truncate text-sm font-bold leading-snug text-text sm:text-base">
+          みんなの「あるある」を投稿して、ランキング上位を目指そう！
+        </p>
+      </div>
+      <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-primary px-4 py-2 text-sm font-black text-white shadow-sm">
+        投稿する →
+      </span>
+    </Link>
   );
 }

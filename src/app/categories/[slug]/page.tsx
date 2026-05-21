@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { CategoryGlyph } from '@/components/categories/CategoryGlyph';
+import { CategorySortTabs } from '@/components/categories/CategorySortTabs';
 import { TagList } from '@/components/home/TagList';
 import { PostCard } from '@/components/posts/PostCard';
 import { RankingPostCard } from '@/components/posts/RankingPostCard';
@@ -13,6 +14,7 @@ import { createPageMetadata, truncateDescription } from '@/lib/seo';
 
 type CategoryDetailPageProps = {
   params: Promise<{ slug: string }>;
+  searchParams: Promise<{ sort?: string }>;
 };
 
 export async function generateMetadata({ params }: CategoryDetailPageProps): Promise<Metadata> {
@@ -28,7 +30,7 @@ export async function generateMetadata({ params }: CategoryDetailPageProps): Pro
   }
 
   return createPageMetadata({
-    title: `${category.title}のあるある`,
+    title: category.title,
     description: truncateDescription(
       category.description ?? `${category.title}にまつわる「あるある」をランキングで見たり、投票・コメントで楽しめます。`,
     ),
@@ -36,13 +38,15 @@ export async function generateMetadata({ params }: CategoryDetailPageProps): Pro
   });
 }
 
-export default async function CategoryDetailPage({ params }: CategoryDetailPageProps) {
+export default async function CategoryDetailPage({ params, searchParams }: CategoryDetailPageProps) {
   const { slug } = await params;
+  const { sort: rawSort } = await searchParams;
+  const sort = rawSort === 'new' || rawSort === 'commented' ? rawSort : 'popular';
   const category = await getCategoryBySlug(slug);
 
   if (!category) notFound();
 
-  const [posts, categories] = await Promise.all([getCategoryPosts(category.id), getActiveCategories()]);
+  const [posts, categories] = await Promise.all([getCategoryPosts(category.id, sort), getActiveCategories()]);
   const tags = Array.from(new Set(posts.flatMap((post) => post.tags ?? []))).slice(0, 12);
 
   return (
@@ -60,16 +64,14 @@ export default async function CategoryDetailPage({ params }: CategoryDetailPageP
             </div>
           </div>
           <div className="grid place-items-center rounded-[32px] bg-white p-8 shadow-inner">
-            <CategoryGlyph iconKey={category.icon_key} className="h-32 w-32 text-6xl" />
-            <p className="mt-4 text-center text-sm font-bold text-slate-400">
-              ※Phase 3では仮絵文字。後続でSVG線画イラストへ調整予定。
-            </p>
+            <CategoryGlyph slug={category.slug} variant="hero" className="h-32 w-32 text-6xl" />
           </div>
         </section>
 
         <section className="grid gap-6 lg:grid-cols-[1fr_320px]">
           <div className="space-y-4">
             <h2 className="text-2xl font-black text-slate-950">{category.title}のランキング</h2>
+            <CategorySortTabs slug={category.slug} currentSort={sort} />
             {posts.length === 0 ? (
               <p className="rounded-[28px] bg-white p-8 text-center font-bold text-slate-400">このカテゴリーのあるあるはまだありません。</p>
             ) : (

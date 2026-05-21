@@ -1,5 +1,6 @@
 import { CategoryCard } from '@/components/categories/CategoryCard';
 import { HomeHero } from '@/components/home/HomeHero';
+import { PromoBanner } from '@/components/home/PromoBanner';
 import { WideAd } from '@/components/home/WideAd';
 import { LatestPostRow } from '@/components/posts/LatestPostRow';
 import { RankingPostCard } from '@/components/posts/RankingPostCard';
@@ -21,12 +22,12 @@ export default async function Home() {
   const [categories, rankingPosts, approvedPosts] = await Promise.all([
     getActiveCategories(),
     getRankingPosts(10),
-    getApprovedPosts(),
+    getApprovedPosts(5),
   ]);
 
   const popularCategories = categories.slice(0, 6);
   const todayPopular = rankingPosts.slice(5, 10);
-  const latestPosts = approvedPosts.slice(0, 5);
+  const latestPosts = approvedPosts;
 
   return (
     <main>
@@ -46,7 +47,7 @@ export default async function Home() {
           </div>
         </section>
 
-        <WideAd label="広告バナー" />
+        <WideAd label="広告バナー" adSlot={process.env.NEXT_PUBLIC_ADSENSE_SLOT_HOME ?? ''} />
 
         <section className="grid gap-6 lg:grid-cols-[1fr_300px]">
           <SectionCard className="p-0 sm:p-0">
@@ -64,9 +65,16 @@ export default async function Home() {
           </SectionCard>
 
           <aside>
-            <WideAd label="広告バナー" variant="vertical" className="h-full" />
+            <WideAd
+              label="広告バナー"
+              variant="vertical"
+              className="h-full"
+              adSlot={process.env.NEXT_PUBLIC_ADSENSE_SLOT_HOME_SIDEBAR ?? ''}
+            />
           </aside>
         </section>
+
+        <PromoBanner />
 
         <section className="grid gap-6 lg:grid-cols-2">
           <SectionCard className="p-0 sm:p-0">

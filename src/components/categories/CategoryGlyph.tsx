@@ -1,27 +1,49 @@
+'use client';
+
+import Image from 'next/image';
+import { useState } from 'react';
+
 type CategoryGlyphProps = {
-  iconKey: string | null | undefined;
+  slug: string;
+  /** flat = 一覧用フラットアイコン、hero = 個別ページ用ウォーターカラーキャラ */
+  variant?: 'flat' | 'hero';
   className?: string;
 };
 
-const iconMap: Record<string, string> = {
-  nurse: '🏥',
-  care: '🤝',
-  beauty: '✂️',
-  sales: '💼',
-  food: '🍴',
-  factory: '🏭',
-  truck: '🚚',
-  animal: '🐾',
-  cat: '🐈',
-  student: '🎓',
-};
+const DEFAULT_FALLBACK = '/icons/categories/default.svg';
 
-export function CategoryGlyph({ iconKey, className = 'h-14 w-14 text-3xl' }: CategoryGlyphProps) {
-  const icon = iconKey ? iconMap[iconKey] : undefined;
+export function CategoryGlyph({ slug, variant = 'flat', className }: CategoryGlyphProps) {
+  const initialSrc =
+    variant === 'hero'
+      ? `/icons/categories/${slug}-hero.png`
+      : `/icons/categories/${slug}.png`;
+
+  const [src, setSrc] = useState(initialSrc);
+
+  const handleError = () => {
+    // hero variant のとき、-hero.png が無ければ通常 .png に降格
+    if (variant === 'hero' && src.endsWith('-hero.png')) {
+      setSrc(`/icons/categories/${slug}.png`);
+      return;
+    }
+    // 通常 .png も無ければ default.svg に
+    if (src !== DEFAULT_FALLBACK) {
+      setSrc(DEFAULT_FALLBACK);
+    }
+  };
+
+  const size = variant === 'hero' ? 160 : 80;
 
   return (
-    <div className={`grid place-items-center rounded-2xl border border-slate-100 bg-white shadow-sm ${className}`}>
-      <span aria-hidden>{icon ?? '✨'}</span>
+    <div className={className}>
+      <Image
+        src={src}
+        alt=""
+        width={size}
+        height={size}
+        onError={handleError}
+        className="h-full w-full object-contain"
+      />
     </div>
   );
 }

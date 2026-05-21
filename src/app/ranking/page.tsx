@@ -22,11 +22,11 @@ export default async function RankingPage() {
           <p className="text-sm font-black text-orange-500">ALL CATEGORY RANKING</p>
           <h1 className="mt-2 text-3xl font-black text-slate-950 sm:text-5xl">総合ランキング</h1>
           <p className="mt-4 max-w-2xl font-bold leading-8 text-slate-600">
-            全カテゴリー横断で、共感数が多いあるあるをランキング表示しています。投票機能はPhase 4以降で接続します。
+            全カテゴリー横断で、共感数が多いあるあるをランキング表示しています。気に入ったあるあるに「わかる！」を押して投票しよう。
           </p>
         </section>
 
-        <WideAd label="ランキング上部 広告枠" />
+        <WideAd label="ランキング上部 広告枠" adSlot={process.env.NEXT_PUBLIC_ADSENSE_SLOT_RANKING ?? ''} />
 
         <div className="space-y-4">
           {posts.length === 0 ? (
