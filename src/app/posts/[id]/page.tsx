@@ -3,11 +3,12 @@ import { notFound } from 'next/navigation';
 import { CommentForm } from '@/components/comments/CommentForm';
 import { CommentList } from '@/components/comments/CommentList';
 import { PostDetailCard } from '@/components/posts/PostDetailCard';
+import { ReportPostButton } from '@/components/posts/ReportPostButton';
 import { Container } from '@/components/ui/Container';
 import { SectionCard } from '@/components/ui/SectionCard';
 import { getPublicComments } from '@/lib/queries/comments';
 import { getPostDetail } from '@/lib/queries/posts';
-import { createPageMetadata, truncateDescription } from '@/lib/seo';
+import { SITE_NAME, absoluteUrl, createPageMetadata, truncateDescription } from '@/lib/seo';
 
 type PostDetailPageProps = {
   params: Promise<{ id: string }>;
@@ -19,20 +20,36 @@ export async function generateMetadata({ params }: PostDetailPageProps): Promise
 
   if (!post) {
     return createPageMetadata({
-      title: 'あるあるが見つかりません',
-      description: '指定されたあるある投稿は見つかりませんでした。',
+      title: '投稿が見つかりません',
+      description: '指定された投稿は見つかりませんでした。',
       path: `/posts/${id}`,
     });
   }
 
   const categoryTitle = post.categories?.title ?? 'あるある';
+  const titleShort = truncateDescription(post.body, 40);
+  const ogTitle = truncateDescription(post.body, 60);
+  const description = `${categoryTitle}のあるある。みんなの「わかる！」が${post.vote_count}票集まっています。`;
+  const url = absoluteUrl(`/posts/${post.id}`);
 
-  return createPageMetadata({
-    title: `${truncateDescription(post.body, 32)} - ${categoryTitle}`,
-    description: truncateDescription(`${categoryTitle}のあるある「${post.body}」に投票・コメントして、みんなの共感ランキングを楽しみましょう。`),
-    path: `/posts/${post.id}`,
-    type: 'article',
-  });
+  return {
+    title: titleShort,
+    description,
+    alternates: { canonical: url },
+    openGraph: {
+      title: ogTitle,
+      description,
+      url,
+      siteName: SITE_NAME,
+      locale: 'ja_JP',
+      type: 'article',
+    },
+    twitter: {
+      card: 'summary',
+      title: ogTitle,
+      description,
+    },
+  };
 }
 
 export default async function PostDetailPage({ params }: PostDetailPageProps) {
@@ -47,6 +64,10 @@ export default async function PostDetailPage({ params }: PostDetailPageProps) {
     <main>
       <Container className="space-y-8 py-8">
         <PostDetailCard post={post} />
+
+        <div className="flex justify-center pt-2">
+          <ReportPostButton postId={post.id} />
+        </div>
 
         <SectionCard>
           <h2 className="text-2xl font-black text-slate-950">コメントを投稿する</h2>
