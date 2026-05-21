@@ -2,10 +2,13 @@
 
 このドキュメントは Codex（および他の AI エージェント）が本リポジトリの現状を素早く把握するためのものです。**作業開始前に必ず読んでください。**
 
-- 最終更新: 2026-05-20
+- 最終更新: 2026-05-21
 - 作業ブランチ: `feature/design-refresh`
-- HEAD（このドキュメント作成時点）: `d777c85e44eafc65a8919cef1a739d4e5193e9a6`
+- Current baseline HEAD: `a428c07` （chore: add deployment and local dev config）
 - リポジトリ: https://github.com/ikeshidr/aruaru-ranking
+
+> Codex 用に Pre-launch 状態を 8 コミットへ分割した結果が Current baseline です。
+> 直近 10 コミット程度を `git log --oneline -10` で必ず確認してください。
 
 ---
 
@@ -257,7 +260,7 @@
 | GitHub | `https://github.com/ikeshidr/aruaru-ranking` |
 | 作業ブランチ | `feature/design-refresh` |
 | デフォルトブランチ | `main` |
-| HEAD（このドキュメント作成時点） | `d777c85e44eafc65a8919cef1a739d4e5193e9a6` |
+| Current baseline HEAD | `a428c07` |
 | CI / Hooks | なし（`npm run verify` = lint + build + test:e2e のみ） |
 | Migrations 件数 | 18（`supabase/migrations/` 配下、timestamp 順） |
 
