@@ -32,6 +32,18 @@ After any DB or RLS changes:
 npx supabase db push
 ```
 
+## Dev server
+
+コード変更後にCSSが崩れることがある。変更完了後は必ず以下を実行すること:
+
+```powershell
+npm run dev:fresh
+```
+
+`npm run dev` は使わないこと。必ず `dev:fresh` を使う。
+
+UIの変更を加えた後は、必ず `npm run dev:fresh` を実行してから「完了」と報告すること。HMRでの確認は不十分。
+
 ## Architecture
 
 ### Tech stack

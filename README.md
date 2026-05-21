@@ -67,3 +67,37 @@ npx supabase gen types typescript --linked | Out-File -FilePath src\lib\supabase
 ## Release readiness
 
 Before production deployment, complete `docs/release-checklist.md`.
+
+## デプロイ（Vercel）
+
+### 必要な環境変数
+
+Vercel ダッシュボードの Settings > Environment Variables に以下を設定する。
+
+| 変数名 | 説明 |
+|---|---|
+| `NEXT_PUBLIC_SUPABASE_URL` | Supabase プロジェクトの URL |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase の anon key |
+| `SUPABASE_SERVICE_ROLE_KEY` | Supabase の service role key（管理画面用） |
+| `NEXT_PUBLIC_SITE_URL` | 本番ドメイン（例: `https://aruaru-ranking.vercel.app`） |
+| `NEXT_PUBLIC_ADSENSE_CLIENT_ID` | Google AdSense の client ID（任意） |
+| `NEXT_PUBLIC_ADSENSE_SLOT_HOME` | ホーム横断広告の slot ID（任意） |
+| `NEXT_PUBLIC_ADSENSE_SLOT_HOME_SIDEBAR` | ホームサイドバー広告の slot ID（任意） |
+| `NEXT_PUBLIC_ADSENSE_SLOT_RANKING` | ランキングページ広告の slot ID（任意） |
+
+### デプロイ手順
+
+1. GitHub リポジトリを Vercel に連携
+2. 上記の環境変数を Vercel ダッシュボードに設定
+3. Supabase ダッシュボード > Authentication > URL Configuration に
+   本番ドメインを追加（例: `https://your-domain.vercel.app`）
+4. `git push origin main` で自動デプロイ開始
+
+### デプロイ後の確認
+
+- [ ] `/` トップページが表示される
+- [ ] `/ranking` ランキングが表示される
+- [ ] `/submit` から投稿できる（即時公開されること）
+- [ ] `/search?q=テスト` で検索できる
+- [ ] `/admin` にログインできる
+- [ ] OGP: Twitter Card Validator で `/posts/[id]` のプレビューを確認
