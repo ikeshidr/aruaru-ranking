@@ -19,7 +19,6 @@ const POST_WITH_CATEGORY_SELECT = `
   categories (
     id,
     slug,
-    name,
     title,
     group_name,
     description,
@@ -30,18 +29,27 @@ const POST_WITH_CATEGORY_SELECT = `
 `;
 
 function throwQueryError(error: PostgrestError | null, context: string) {
-  if (error) throw new Error(`${context}: ${error.message}`);
+  if (error) {
+    console.error(`${context}:`, error);
+    throw new Error('データの取得に失敗しました');
+  }
 }
 
-export async function getApprovedPosts() {
+export async function getApprovedPosts(limit?: number) {
   const supabase = await createClient();
 
-  const { data, error } = await supabase
+  let query = supabase
     .from("posts")
     .select(POST_WITH_CATEGORY_SELECT)
     .eq("status", "approved")
     .is("deleted_at", null)
     .order("created_at", { ascending: false });
+
+  if (typeof limit === "number" && limit > 0) {
+    query = query.limit(limit);
+  }
+
+  const { data, error } = await query;
 
   throwQueryError(error, "Failed to fetch approved posts");
 
@@ -116,4 +124,28 @@ export async function getPostDetail(id: string) {
   throwQueryError(error, "Failed to fetch post detail");
 
   return data ?? null;
+}
+
+const SEARCH_LIMIT = 30;
+
+export async function searchPosts(rawQuery: string) {
+  const q = rawQuery.trim();
+  if (!q) return [];
+
+  const escaped = q.replace(/[%_\\]/g, '\\$&');
+
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from("posts")
+    .select(POST_WITH_CATEGORY_SELECT)
+    .eq("status", "approved")
+    .is("deleted_at", null)
+    .ilike("body", `%${escaped}%`)
+    .order("vote_count", { ascending: false })
+    .order("created_at", { ascending: false })
+    .limit(SEARCH_LIMIT);
+
+  throwQueryError(error, "Failed to search posts");
+  return data ?? [];
 }
